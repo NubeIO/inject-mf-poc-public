@@ -26,6 +26,7 @@ module.exports = {
       },
     },
   },
+  excludedFiles: ["rsbuild.config.ts"], // Exclude the file causing the issue
   ignorePatterns: [
     // Ignore dotfiles
     ".*.js",
