@@ -1,1 +1,1 @@
-export default function Button(): import("react/jsx-runtime").JSX.Element;
+export default function CardWithForm(): import("react/jsx-runtime").JSX.Element;

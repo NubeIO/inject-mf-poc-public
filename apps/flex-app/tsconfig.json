@@ -1,5 +1,5 @@
 {
-  "extends": "@repo/typescript-config/mf-consumer.json",
+  "extends": "@nubeio/tsconfig/mf-consumer.json",
   "include": ["src"],
-  "exclude": ["node_modules"],
+  "exclude": ["node_modules"]
 }

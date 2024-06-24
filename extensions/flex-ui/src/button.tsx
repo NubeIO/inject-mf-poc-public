@@ -1,3 +1,7 @@
-export default function Button() {
-  return <div>Provider button flex-ui</div>;
+import { Button } from "@nubeio/ui/button";
+
+export default function CardWithForm() {
+  return (
+    <Button>Button from Flex UI</Button>
+  );
 }
