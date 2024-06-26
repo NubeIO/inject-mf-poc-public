@@ -1,6 +1,6 @@
 
 import { MenuNode, MenuRegistry, TYPES } from "@nubeio/flex-core";
-import { useContainer } from 'inversify-react';
+import { useInjection } from 'inversify-react';
 import {
   Menubar,
   MenubarItem,
@@ -13,7 +13,7 @@ import {
 } from "@nubeio/ui/menubar";
 
 export const LayoutMenu = (): React.ReactNode => {
-  const menuRegistry = useContainer().get<MenuRegistry>(TYPES.MenuRegistry);
+  const menuRegistry = useInjection<MenuRegistry>(TYPES.MenuRegistry);
   const menuNode = menuRegistry.root;
   
   return (
