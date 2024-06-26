@@ -4,12 +4,14 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "rsbuild dev --open",
+    "dev": "set NODE_ENV=production & rsbuild dev --open",
     "build": "rsbuild build",
+    "clean": "git clean -xdf .turbo dist node_modules",
     "preview": "rsbuild preview"
   },
   "dependencies": {
     "@module-federation/enhanced": "^0.2.0",
+    "@nubeio/flex-core": "workspace:*",
     "@nubeio/ui": "workspace:*",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"

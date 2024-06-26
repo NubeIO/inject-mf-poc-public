@@ -1,5 +1,8 @@
 {
   "extends": "@nubeio/tsconfig/inversify-library.json",
-  "include": ["src"],
+  "compilerOptions": {
+    "jsx": "preserve"
+  },
+  "include": ["*.ts", "src"],
   "exclude": ["node_modules"]
 }

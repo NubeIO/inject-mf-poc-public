@@ -17,11 +17,16 @@ export default defineConfig({
       config.output!.uniqueName = "flex_ui";
       appendPlugins([
         new ModuleFederationPlugin({
-          name: "flex_ui",
+          name: "flex_business",
           exposes: {
             "./button": "./src/button.tsx",
+            "./module": "./src/module.ts",
+            "./frontend-application": "./src/frontend-application.ts",
           },
-          shared: ["react", "react-dom"],
+          shared: {
+            react: { singleton: true },
+            "react-dom": { singleton: true },
+          },
         }),
       ]);
     },

@@ -56,7 +56,6 @@ declare module "eslint-plugin-turbo" {
   export const rules: Record<string, Rule.RuleModule>;
 }
 
-
 declare module "@nubeio/eslint-config/base" {
   import type { Linter, Rule } from "eslint";
 

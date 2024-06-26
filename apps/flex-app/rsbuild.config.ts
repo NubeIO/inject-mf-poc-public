@@ -17,7 +17,10 @@ export default defineConfig({
             flex_business:
               "flex_business@http://localhost:3001/mf-manifest.json",
           },
-          shared: ["react", "react-dom"],
+          shared: {
+            react: { singleton: true },
+            "react-dom": { singleton: true },
+          },
         }),
       ]);
     },

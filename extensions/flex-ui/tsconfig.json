@@ -1,5 +1,5 @@
 {
-  "extends": "@nubeio/tsconfig/react-library.json",
+  "extends": "@nubeio/tsconfig/inversify-library.json",
   "include": ["src"],
   "exclude": ["node_modules"]
 }

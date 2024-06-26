@@ -5,7 +5,7 @@ import { ModuleFederationPlugin } from "@module-federation/enhanced/rspack";
 
 export default defineConfig({
   server: {
-    port: 3000,
+    port: 3001,
   },
   dev: {
     // It is necessary to configure assetPrefix, and in the production environment, you need to configure output.assetPrefix
@@ -20,8 +20,13 @@ export default defineConfig({
           name: "flex_business",
           exposes: {
             "./button": "./src/button.tsx",
+            "./module": "./src/module.ts",
+            "./frontend-application": "./src/frontend-application.ts",
           },
-          shared: ["react", "react-dom"],
+          shared: {
+            react: { singleton: true },
+            "react-dom": { singleton: true },
+          },
         }),
       ]);
     },
