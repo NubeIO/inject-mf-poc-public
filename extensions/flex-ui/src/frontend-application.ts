@@ -4,6 +4,7 @@ import {
   inject,
   injectable,
   TYPES,
+  FrontEndApplication,
 } from "@nubeio/flex-core";
 
 const EDIT = [...MAIN_MENU_BAR, "3_edit_menu"];
@@ -14,35 +15,36 @@ const VIEW_ZOOM_IN = [...VIEW, "1_zoom_in"];
 const VIEW_ZOOM_OUT = [...VIEW, "2_zoom_out"];
 
 @injectable()
-export default class FlexUIApplication {
+export default class FlexUIApplication implements FrontEndApplication {
   constructor(
     @inject(TYPES.MenuRegistry) protected readonly menuRegistry: MenuRegistry,
-  ) {
-    menuRegistry.registerMenuAction(EDIT, {
+  ) {}
+  initialize(): void {
+    this.menuRegistry.registerMenuAction(EDIT, {
       label: "Edit",
     });
-    menuRegistry.registerMenuAction(EDIT_UNDO, {
+    this.menuRegistry.registerMenuAction(EDIT_UNDO, {
       label: "Undo",
       execute(...args) {
         console.log("Undo");
       },
     });
-    menuRegistry.registerMenuAction(EDIT_REDO, {
+    this.menuRegistry.registerMenuAction(EDIT_REDO, {
       label: "Redo",
       execute(...args) {
         console.log("Redo");
       },
     });
-    menuRegistry.registerMenuAction(VIEW, {
+    this.menuRegistry.registerMenuAction(VIEW, {
       label: "View",
     });
-    menuRegistry.registerMenuAction(VIEW_ZOOM_IN, {
+    this.menuRegistry.registerMenuAction(VIEW_ZOOM_IN, {
       label: "Zoom In",
       execute(...args) {
         console.log("Zoom In");
       },
     });
-    menuRegistry.registerMenuAction(VIEW_ZOOM_OUT, {
+    this.menuRegistry.registerMenuAction(VIEW_ZOOM_OUT, {
       label: "Zoom Out",
       execute(...args) {
         console.log("Zoom Out");

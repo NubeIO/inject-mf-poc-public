@@ -1,10 +1,5 @@
 export type MenuPath = string[];
 export const MAIN_MENU_BAR: MenuPath = ["menubar"];
-
-export const TYPES = {
-  MenuRegistry: Symbol.for("MenuRegistry"),
-};
-
 export interface MenuNodeMetadata {
   id?: string;
   label?: string;

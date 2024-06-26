@@ -1,7 +1,12 @@
-import { ContainerModule } from "@nubeio/flex-core";
+import { ContainerModule, FrontEndApplication, TYPES } from "@nubeio/flex-core";
 import FlexBusinessApplication from "./frontend-application";
 export * from "./frontend-application";
 
 export default new ContainerModule((bind) => {
-  bind(FlexBusinessApplication).toSelf().inSingletonScope();
+  bind<FrontEndApplication>(TYPES.FrontEndApplication).toService(
+    FlexBusinessApplication,
+  );
+  bind<FlexBusinessApplication>(FlexBusinessApplication)
+    .toSelf()
+    .inSingletonScope();
 });

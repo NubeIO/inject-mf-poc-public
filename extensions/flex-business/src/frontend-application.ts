@@ -4,6 +4,7 @@ import {
   inject,
   injectable,
   TYPES,
+  FrontEndApplication,
 } from "@nubeio/flex-core";
 
 const ACCOUNT = [...MAIN_MENU_BAR, "2_accounts_menu"];
@@ -14,17 +15,19 @@ const ACCOUNT_SUBMENU_RITESH = [
 ];
 
 @injectable()
-export default class FlexBusinessApplication {
+export default class FlexBusinessApplication implements FrontEndApplication {
   constructor(
     @inject(TYPES.MenuRegistry) protected readonly menuRegistry: MenuRegistry,
-  ) {
-    menuRegistry.registerMenuAction(ACCOUNT, {
+  ) {}
+
+  initialize(): void {
+    this.menuRegistry.registerMenuAction(ACCOUNT, {
       label: "Accounts",
     });
-    menuRegistry.registerMenuAction(ACCOUNT_SUBMENU, {
+    this.menuRegistry.registerMenuAction(ACCOUNT_SUBMENU, {
       label: "Ritesh",
     });
-    menuRegistry.registerMenuAction(ACCOUNT_SUBMENU_RITESH, {
+    this.menuRegistry.registerMenuAction(ACCOUNT_SUBMENU_RITESH, {
       label: "Logout",
       execute(...args) {
         console.log("Logout");
@@ -32,4 +35,3 @@ export default class FlexBusinessApplication {
     });
   }
 }
-

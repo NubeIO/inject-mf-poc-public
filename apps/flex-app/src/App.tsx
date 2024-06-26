@@ -1,16 +1,11 @@
 import React, { useState } from "react";
 
-import { Provider } from 'inversify-react';
+import { Provider } from "inversify-react";
 import businessContainer from "flex_business/module";
 import uiContainer from "flex_ui/module";
 import coreContainer from "@nubeio/flex-core/module";
 
-import {
-  Container,
-  CoreFrontendApplication,
-} from "@nubeio/flex-core";
-import FlexBusinessApplication from "flex_business/frontend-application";
-import FlexUIApplication from "flex_ui/frontend-application";
+import { Container, initializeApplication } from "@nubeio/flex-core";
 
 import { ChildComponent } from "./components/Layout";
 
@@ -20,12 +15,7 @@ const App = () => {
   React.useEffect(() => {
     const newContainer = new Container();
     newContainer.load(coreContainer, uiContainer, businessContainer);
-
-    // todo find better way to initialize
-    newContainer.get<CoreFrontendApplication>(CoreFrontendApplication);
-    newContainer.get<FlexBusinessApplication>(FlexBusinessApplication);
-    newContainer.get<FlexUIApplication>(FlexUIApplication);
-
+    initializeApplication(newContainer);
     setContainer(newContainer);
   }, []);
 
