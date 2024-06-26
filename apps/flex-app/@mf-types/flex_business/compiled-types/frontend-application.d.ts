@@ -1,5 +1,5 @@
 import { MenuRegistry } from "@nubeio/flex-core";
-export default class FlexUIApplication {
+export default class FlexBusinessApplication {
     protected readonly menuRegistry: MenuRegistry;
     constructor(menuRegistry: MenuRegistry);
 }

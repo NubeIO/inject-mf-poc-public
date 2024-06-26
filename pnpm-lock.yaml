@@ -29,6 +29,9 @@ importers:
       '@nubeio/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      inversify-react:
+        specifier: ^1.1.1
+        version: 1.1.1(inversify@6.0.2)(react@18.3.1)
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -1999,6 +2002,12 @@ packages:
 
   invariant@2.2.4:
     resolution: {integrity: sha512-phJfQVBuaJM5raOpJjSfkiD6BpbCE4Ns//LaXl6wGYtUBY83nWS6Rf9tXm2e8VaK60JEjYldbPif/A2B1C2gNA==}
+
+  inversify-react@1.1.1:
+    resolution: {integrity: sha512-uYkR5PqiGqb78wPgQ9d49mLL3BgmgT7UCQ60hsnLbrYYh9Zktwk2Qi3qWvHyDLZ+ZsyzlTEzaEOD6cMCNzc1Yg==}
+    peerDependencies:
+      inversify: ^5.0.5 || ^6.0.1
+      react: ^16.3.0 || ^17.0.0 || ^18.0.0
 
   inversify@6.0.2:
     resolution: {integrity: sha512-i9m8j/7YIv4mDuYXUAcrpKPSaju/CIly9AHK5jvCBeoiM/2KEsuCQTTP+rzSWWpLYWRukdXFSl6ZTk2/uumbiA==}
@@ -5149,6 +5158,11 @@ snapshots:
   invariant@2.2.4:
     dependencies:
       loose-envify: 1.4.0
+
+  inversify-react@1.1.1(inversify@6.0.2)(react@18.3.1):
+    dependencies:
+      inversify: 6.0.2
+      react: 18.3.1
 
   inversify@6.0.2: {}
 

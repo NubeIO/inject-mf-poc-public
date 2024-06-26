@@ -6,47 +6,30 @@ import {
   TYPES,
 } from "@nubeio/flex-core";
 
-const EDIT = [...MAIN_MENU_BAR, "3_edit_menu"];
-const EDIT_UNDO = [...EDIT, "1_undo"];
-const EDIT_REDO = [...EDIT, "2_redo"];
-const VIEW = [...MAIN_MENU_BAR, "4_view_menu"];
-const VIEW_ZOOM_IN = [...VIEW, "1_zoom_in"];
-const VIEW_ZOOM_OUT = [...VIEW, "2_zoom_out"];
+const ACCOUNT = [...MAIN_MENU_BAR, "2_accounts_menu"];
+const ACCOUNT_SUBMENU = [...ACCOUNT, "1_accounts_submenu"];
+const ACCOUNT_SUBMENU_RITESH = [
+  ...ACCOUNT_SUBMENU,
+  "1_accounts_submenu_ritesh",
+];
 
 @injectable()
-export default class FlexUIApplication {
+export default class FlexBusinessApplication {
   constructor(
     @inject(TYPES.MenuRegistry) protected readonly menuRegistry: MenuRegistry,
   ) {
-    menuRegistry.registerMenuAction(EDIT, {
-      label: "Edit",
+    menuRegistry.registerMenuAction(ACCOUNT, {
+      label: "Accounts",
     });
-    menuRegistry.registerMenuAction(EDIT_UNDO, {
-      label: "Undo",
+    menuRegistry.registerMenuAction(ACCOUNT_SUBMENU, {
+      label: "Ritesh",
+    });
+    menuRegistry.registerMenuAction(ACCOUNT_SUBMENU_RITESH, {
+      label: "Logout",
       execute(...args) {
-        console.log("Undo");
-      },
-    });
-    menuRegistry.registerMenuAction(EDIT_REDO, {
-      label: "Redo",
-      execute(...args) {
-        console.log("Redo");
-      },
-    });
-    menuRegistry.registerMenuAction(VIEW, {
-      label: "View",
-    });
-    menuRegistry.registerMenuAction(VIEW_ZOOM_IN, {
-      label: "Zoom In",
-      execute(...args) {
-        console.log("Zoom In");
-      },
-    });
-    menuRegistry.registerMenuAction(VIEW_ZOOM_OUT, {
-      label: "Zoom Out",
-      execute(...args) {
-        console.log("Zoom Out");
+        console.log("Logout");
       },
     });
   }
 }
+
