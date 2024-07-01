@@ -6,7 +6,8 @@ type WelcomeComponentProps = {};
 export const WelcomeLayout: React.FC<WelcomeComponentProps> = () => {
   return (
     <div className="flex flex-col items-center justify-center h-screen">
-      <p>Start building amazing things with Rsbuild.</p>
+      <h2 className="mb-4 font-bold text-2xl	">Welcome Screen</h2>
+      <p className="mb-4">Start building amazing things with Rsbuild.</p>
       <div className="flex gap-2">
         <PBUi />
         <PBBusiness />

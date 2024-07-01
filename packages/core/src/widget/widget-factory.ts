@@ -13,7 +13,7 @@ export interface WidgetConstructionOptions {
 }
 
 type WidgetChangeListener = () => void;
-type WidgetOpenedListener = (key: string) => void;
+type WidgetOpenedListener = (key: string | undefined) => void;
 
 @injectable()
 export class WidgetManager {
@@ -77,7 +77,7 @@ export class WidgetManager {
 
   registerFactory(factory: WidgetFactory): void {
     if (this._cachedFactories.has(factory.id)) {
-      throw new Error(`Factory with id '${factory.id}' is already registered.`);
+      return;
     }
     this._cachedFactories.set(factory.id, factory);
   }
@@ -108,5 +108,14 @@ export class WidgetManager {
     for (const listener of this.widgetOpenedListeners) {
       listener(key);
     }
+  }
+
+  onCloseWidget(key: string): void {
+    this.widgets.delete(key);
+    this.notifyWidgetChangeListeners();
+
+    const firstAvailableKey =
+      this.widgets.size > 0 ? this.widgets.keys().next().value : undefined;
+    this.notifyWidgetOpenedListeners(firstAvailableKey);
   }
 }
