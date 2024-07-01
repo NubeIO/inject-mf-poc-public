@@ -1,5 +1,4 @@
-// FIXME: This kinda stinks...
-/// <reference types="../../tooling/eslint/types.d.ts" />
+<reference types="../../tooling/eslint/types.d.ts" />
 
 import baseConfig from "@nubeio/eslint-config/base";
 

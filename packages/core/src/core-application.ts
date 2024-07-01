@@ -1,4 +1,4 @@
-import { inject, injectable, postConstruct } from "inversify";
+import { inject, injectable } from "inversify";
 
 import { FrontEndApplication } from "./common";
 import { TYPES } from "./common/types";
@@ -15,7 +15,6 @@ export class CoreFrontendApplication implements FrontEndApplication {
     @inject(TYPES.MenuRegistry) protected readonly menuRegistry: MenuRegistry,
   ) {}
 
-  @postConstruct()
   public initialize() {
     this.menuRegistry.registerMenuAction(FILE, {
       label: "File",
