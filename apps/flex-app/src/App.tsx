@@ -9,13 +9,14 @@ import { Container, initializeApplication } from "@nubeio/flex-core";
 
 import { ChildComponent } from "./components/Layout";
 
+const newContainer = new Container();
+newContainer.load(coreContainer, uiContainer, businessContainer);
+initializeApplication(newContainer);
+
 const App = () => {
   const [container, setContainer] = useState<Container | null>(null);
 
   React.useEffect(() => {
-    const newContainer = new Container();
-    newContainer.load(coreContainer, uiContainer, businessContainer);
-    initializeApplication(newContainer);
     setContainer(newContainer);
   }, []);
 
