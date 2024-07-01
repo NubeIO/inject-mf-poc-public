@@ -61,8 +61,11 @@ export const ChildComponent: React.FC<ChildComponentProps> = () => {
             >
               <TabsList className="flex gap-0 border-b-0 justify-start">
                 {Array.from(widgets.entries()).map(([key, widget]) => (
-                  <TabsTrigger key={key} value={key} className="relative">
-                    {widget.name}
+                  <div className="flex relative">
+                    <TabsTrigger key={key} value={key}>
+                      {widget.name}
+                      <div className="w-12"></div>
+                    </TabsTrigger>
                     <div className="absolute right-1">
                       <Button
                         size="iconOnly"
@@ -70,14 +73,13 @@ export const ChildComponent: React.FC<ChildComponentProps> = () => {
                         className="relative top-0 right-0"
                         onClick={(event) => {
                           event.stopPropagation();
-                          return onCloseWidget(key);
+                          onCloseWidget(key);
                         }}
                       >
                         x<span className="sr-only">Close</span>
                       </Button>
                     </div>
-                    <div className="w-24"></div>
-                  </TabsTrigger>
+                  </div>
                 ))}
               </TabsList>
               {Array.from(widgets.entries()).map(([key, widget]) => (
