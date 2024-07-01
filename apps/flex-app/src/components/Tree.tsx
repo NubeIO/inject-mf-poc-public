@@ -1,5 +1,4 @@
-import { TYPES, URI } from "@nubeio/flex-core";
-import * as flexCore from "@nubeio/flex-core";
+import { TYPES, URI, OpenService } from "@nubeio/flex-core";
 import { Tree, Folder, File } from "@nubeio/ui/tree/tree-view-api";
 import { useInjection } from "inversify-react";
 
@@ -47,7 +46,7 @@ const LeftTree = () => {
       ],
     },
   ];
-  const openHandler = useInjection<flexCore.OpenHandler>(TYPES.OpenHandler);
+  const openHandler = useInjection<OpenService>(TYPES.OpenService);
 
   return (
     <Tree
@@ -56,14 +55,6 @@ const LeftTree = () => {
       elements={elements}
     >
       <Folder element="src" value="1">
-        <File
-          handleSelect={() => {
-            openHandler.open(URI.parse("nube://nube.app/"));
-          }}
-          value="2"
-        >
-          <p> main.app </p>
-        </File>
         <Folder value="20" element="wires">
           <File
             isSelect
@@ -94,6 +85,14 @@ const LeftTree = () => {
           </File>
         </Folder>
       </Folder>
+      <File
+        handleSelect={() => {
+          openHandler.open(URI.parse("nube://nube.app/settings"));
+        }}
+        value="2"
+      >
+        <p> settings </p>
+      </File>
     </Tree>
   );
 };

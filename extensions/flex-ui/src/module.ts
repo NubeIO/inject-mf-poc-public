@@ -1,6 +1,11 @@
-import { ContainerModule, FrontEndApplication, TYPES } from "@nubeio/flex-core";
+import {
+  ContainerModule,
+  FrontEndApplication,
+  OpenHandler,
+  TYPES,
+} from "@nubeio/flex-core";
 import FlexUIApplication from "./frontend-application";
-import { FlowContribution } from "./flow/flow-contribution";
+import FlowContribution from "./flow/flow-contribution";
 import FlowComponent from "./flow/flow-component";
 export * from "./frontend-application";
 
@@ -8,7 +13,8 @@ export default new ContainerModule((bind) => {
   bind<FrontEndApplication>(TYPES.FrontEndApplication).to(FlexUIApplication);
   bind<FlexUIApplication>(FlexUIApplication).toSelf().inSingletonScope();
 
-  bind(TYPES.OpenHandler).to(FlowContribution);
+  bind<OpenHandler>(TYPES.OpenHandler).to(FlowContribution);
+  bind<FlowContribution>(FlowContribution).toSelf().inSingletonScope();
 
   bind(FlowComponent).toSelf();
   bind(TYPES.WidgetFactory)

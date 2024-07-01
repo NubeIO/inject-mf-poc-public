@@ -7,16 +7,15 @@ import {
   injectable,
 } from "@nubeio/flex-core";
 import { WidgetOpenHandler, WidgetOpenerOptions } from "@nubeio/flex-core";
-import FlowComponent from "./flow-component";
+import SettingComponent from "./setting-component";
 
-export type FlowWidgetOpenerOptions = {
+export type SettingWidgetOpenerOptions = {
   uri: URI;
-  id: string | null;
 };
 
 @injectable()
-export default class FlowContribution extends WidgetOpenHandler<FlowComponent> {
-  readonly id: string = FlowComponent.ID;
+export default class SettingContribution extends WidgetOpenHandler<SettingComponent> {
+  readonly id: string = SettingComponent.ID;
 
   constructor(
     @inject(TYPES.WidgetManager)
@@ -25,9 +24,9 @@ export default class FlowContribution extends WidgetOpenHandler<FlowComponent> {
     super(widgetManager);
 
     widgetManager.registerFactory({
-      id: FlowComponent.ID,
-      createWidget(options: FlowWidgetOpenerOptions) {
-        return new FlowComponent(options);
+      id: SettingComponent.ID,
+      createWidget(options: SettingWidgetOpenerOptions) {
+        return new SettingComponent(options);
       },
     });
   }
@@ -36,7 +35,7 @@ export default class FlowContribution extends WidgetOpenHandler<FlowComponent> {
     uri: URI,
     options?: WidgetOpenerOptions | undefined,
   ): MaybePromise<number> {
-    if (uri.scheme === "wires") {
+    if (uri.scheme === "nube" && uri.path.endsWith("settings")) {
       return 1000;
     }
 
@@ -46,14 +45,12 @@ export default class FlowContribution extends WidgetOpenHandler<FlowComponent> {
   protected createWidgetOptions(
     uri: URI,
     options?: WidgetOpenerOptions | undefined,
-  ): FlowWidgetOpenerOptions {
+  ): SettingWidgetOpenerOptions {
     const queryParams = new URLSearchParams(uri.query);
-    const id = queryParams.get("id");
 
     return {
       ...options,
       uri: uri,
-      id: id,
     };
   }
 }

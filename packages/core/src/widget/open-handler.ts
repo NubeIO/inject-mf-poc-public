@@ -39,14 +39,8 @@ export abstract class WidgetOpenHandler<W extends Widget>
     uri: URI,
     options?: WidgetOpenerOptions,
   ): Promise<W> {
-    if (this.canHandle(uri)) {
-      const widgetOptions = this.createWidgetOptions(uri, options);
-      return this.widgetManager.getOrCreateWidget<W>(this.id, widgetOptions);
-    } else {
-      return this.widgetManager.getOrCreateWidget<W>(NotFoundComponent.ID, {
-        uri: uri,
-      });
-    }
+    const widgetOptions = this.createWidgetOptions(uri, options);
+    return this.widgetManager.getOrCreateWidget<W>(this.id, widgetOptions);
   }
 
   protected abstract createWidgetOptions(
