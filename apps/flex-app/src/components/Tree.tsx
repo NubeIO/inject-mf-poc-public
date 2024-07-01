@@ -13,41 +13,34 @@ const LeftTree = () => {
         {
           id: "2",
           isSelectable: true,
-          name: "app.tsx",
+          name: "main.app",
         },
         {
-          id: "3",
+          id: "20",
           isSelectable: true,
-          name: "components",
+          name: "pages",
           children: [
             {
-              id: "20",
+              id: "21",
               isSelectable: true,
-              name: "pages",
-              children: [
-                {
-                  id: "21",
-                  isSelectable: true,
-                  name: "counter.ts",
-                },
-                {
-                  id: "22",
-                  isSelectable: true,
-                  name: "trigger.ts",
-                },
-              ],
+              name: "counter.ts",
+            },
+            {
+              id: "22",
+              isSelectable: true,
+              name: "trigger.ts",
             },
           ],
         },
         {
           id: "6",
           isSelectable: true,
-          name: "ui",
+          name: "schedule",
           children: [
             {
               id: "7",
               isSelectable: true,
-              name: "carousel.tsx",
+              name: "schedule.sch",
             },
           ],
         },
@@ -63,33 +56,41 @@ const LeftTree = () => {
       elements={elements}
     >
       <Folder element="src" value="1">
-        <File value="2">
-          <p> app.tsx </p>
+        <File
+          handleSelect={() => {
+            openHandler.open(URI.parse("nube://nube.app/"));
+          }}
+          value="2"
+        >
+          <p> main.app </p>
         </File>
-        <Folder value="3" element="components">
-          <Folder value="20" element="pages">
-            <File
-              isSelect
-              handleSelect={() => {
-                openHandler.open(URI.parse("wires://nube.wires/?id=counter"));
-              }}
-              value="21"
-            >
-              <p>counter.wires</p>
-            </File>
-            <File
-              handleSelect={() => {
-                openHandler.open(URI.parse("wires://nube.wires/?id=trigger"));
-              }}
-              value="22"
-            >
-              <p>trigger.wires</p>
-            </File>
-          </Folder>
+        <Folder value="20" element="wires">
+          <File
+            isSelect
+            handleSelect={() => {
+              openHandler.open(URI.parse("wires://nube.app/?id=counter"));
+            }}
+            value="21"
+          >
+            <p>counter.wires</p>
+          </File>
+          <File
+            handleSelect={() => {
+              openHandler.open(URI.parse("wires://nube.app/?id=trigger"));
+            }}
+            value="22"
+          >
+            <p>trigger.wires</p>
+          </File>
         </Folder>
-        <Folder value="6" element="ui">
-          <File value="7">
-            <p>carousel.tsx</p>
+        <Folder value="6" element="schedule">
+          <File
+            handleSelect={() => {
+              openHandler.open(URI.parse("schedule://nube.app/?id=123"));
+            }}
+            value="7"
+          >
+            <p>schedule.sch</p>
           </File>
         </Folder>
       </Folder>

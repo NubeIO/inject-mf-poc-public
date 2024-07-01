@@ -2,6 +2,7 @@ import { inject, injectable, postConstruct } from "inversify";
 import { URI } from "vscode-uri";
 
 import { MaybePromise, TYPES, Widget } from "../common";
+import NotFoundComponent from "./not-found";
 import { WidgetManager } from "./widget-factory";
 
 export interface OpenerOptions {}
@@ -38,8 +39,14 @@ export abstract class WidgetOpenHandler<W extends Widget>
     uri: URI,
     options?: WidgetOpenerOptions,
   ): Promise<W> {
-    const widgetOptions = this.createWidgetOptions(uri, options);
-    return this.widgetManager.getOrCreateWidget<W>(this.id, widgetOptions);
+    if (this.canHandle(uri)) {
+      const widgetOptions = this.createWidgetOptions(uri, options);
+      return this.widgetManager.getOrCreateWidget<W>(this.id, widgetOptions);
+    } else {
+      return this.widgetManager.getOrCreateWidget<W>(NotFoundComponent.ID, {
+        uri: uri,
+      });
+    }
   }
 
   protected abstract createWidgetOptions(

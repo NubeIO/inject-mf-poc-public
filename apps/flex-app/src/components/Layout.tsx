@@ -46,9 +46,9 @@ export const ChildComponent: React.FC<ChildComponentProps> = () => {
   }, [menuRegistry, selectedWidget]);
 
   return (
-    <div>
+    <div className="flex flex-col h-screen">
       <LayoutMenu />
-      <div className="flex">
+      <div className="flex flex-1">
         <LeftTree />
         <div className="flex-1">
           {widgets.size === 0 ? (
@@ -57,6 +57,7 @@ export const ChildComponent: React.FC<ChildComponentProps> = () => {
             <Tabs
               key={selectedWidget}
               defaultValue={selectedWidget}
+              className="flex flex-col h-full"
               onValueChange={onUpdateSelectedTab}
             >
               <TabsList className="flex gap-0 border-b-0 justify-start">

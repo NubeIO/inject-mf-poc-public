@@ -23,6 +23,10 @@ export default defineConfig({
             "./module": "./src/module.ts",
             "./frontend-application": "./src/frontend-application.ts",
           },
+          shared: {
+            react: { singleton: true },
+            "react-dom": { singleton: true },
+          },
         }),
       ]);
     },

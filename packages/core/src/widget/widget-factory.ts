@@ -1,6 +1,7 @@
 import { injectable } from "inversify";
 
 import { MaybePromise, Widget } from "../common";
+import NotFoundComponent from "./not-found";
 
 export interface WidgetFactory {
   readonly id: string;
@@ -21,6 +22,15 @@ export class WidgetManager {
   readonly widgets = new Map<string, Widget>();
   private widgetChangeListeners = new Set<WidgetChangeListener>();
   private widgetOpenedListeners = new Set<WidgetOpenedListener>();
+
+  constructor() {
+    this.registerFactory({
+      id: NotFoundComponent.ID,
+      createWidget(options) {
+        return new NotFoundComponent(options);
+      },
+    });
+  }
 
   getWidgets(factoryId: string): Widget[] {
     const result: Widget[] = [];

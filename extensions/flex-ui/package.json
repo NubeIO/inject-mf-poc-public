@@ -15,6 +15,7 @@
     "@nubeio/ui": "workspace:*",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "reactflow": "^11.11.4",
     "reflect-metadata": "^0.2.2"
   },
   "devDependencies": {
