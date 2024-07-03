@@ -231,9 +231,11 @@ export const MainDisplay = memo((props: any) => {
   };
 
   const renderLayout = (config: LayoutConfig) => {
-    const actionGroup = (child: LayoutConfig) => {
+    const actionGroup = (child: LayoutConfig, floating: boolean) => {
       return (
-        <>
+        <div
+          className={`w-full h-full flex flex-col items-center justify-center ${floating && "bg-white/80 absolute z-[1]"}`}
+        >
           <span className="font-semibold">{child.id}</span>
           <WidgetSelection
             extensionManifest={extensionManifest}
@@ -269,7 +271,7 @@ export const MainDisplay = memo((props: any) => {
               </>
             )}
           </div>
-        </>
+        </div>
       );
     };
 
@@ -278,13 +280,20 @@ export const MainDisplay = memo((props: any) => {
       return (
         <div
           key={config.id}
-          className="flex flex-col w-full h-full items-center justify-center"
+          className="flex flex-col w-full h-full items-center justify-center relative"
         >
-          {config.content !== null
-            ? isManagingLayout
-              ? actionGroup(config)
-              : config.content
-            : actionGroup(config)}
+          {config.content !== null ? (
+            isManagingLayout ? (
+              <>
+                {actionGroup(config, true)}
+                {config.content}
+              </>
+            ) : (
+              config.content
+            )
+          ) : (
+            actionGroup(config, false)
+          )}
         </div>
       );
     }
@@ -301,14 +310,21 @@ export const MainDisplay = memo((props: any) => {
           return (
             <>
               <ResizablePanel defaultSize={initSize} minSize={20} maxSize={80}>
-                <div className="flex flex-col w-full h-full items-center justify-center">
-                  {hasChildren
-                    ? renderLayout(child)
-                    : child.content !== null
-                      ? isManagingLayout
-                        ? actionGroup(child)
-                        : child.content
-                      : actionGroup(child)}
+                <div className="flex flex-col w-full h-full items-center justify-center relative">
+                  {hasChildren ? (
+                    renderLayout(child)
+                  ) : child.content !== null ? (
+                    isManagingLayout ? (
+                      <>
+                        {actionGroup(child, true)}
+                        {child.content}
+                      </>
+                    ) : (
+                      child.content
+                    )
+                  ) : (
+                    actionGroup(child, false)
+                  )}
                 </div>
               </ResizablePanel>
               {index !== config.children.length - 1 && <ResizableHandle />}
