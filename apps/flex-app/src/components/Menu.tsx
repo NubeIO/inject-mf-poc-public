@@ -10,24 +10,43 @@ import {
   MenubarTrigger,
   MenubarContent,
 } from "@nubeio/ui/menubar";
+import { Icon } from "@nubeio/ui/universal-icon";
+import { TooltipWrapper } from "@nubeio/ui/tooltip-wrapper";
 
-export const LayoutMenu = (): React.ReactNode => {
+export const LayoutMenu = (props: any): React.ReactNode => {
+  const { isManagingLayout, setIsManagingLayout } = props;
   const menuRegistry = useInjection<MenuRegistry>(TYPES.MenuRegistry);
   const menuNode = menuRegistry.root;
 
   return (
-    <Menubar key={menuNode.id}>
-      {menuNode.children?.map((menuNode) => (
-        <MenubarMenu key={menuNode.id}>
-          <MenubarTrigger>{menuNode.label}</MenubarTrigger>
-          {menuNode.children && (
-            <MenubarContent>
-              {menuNode.children.map((item) => renderSubMenu(item))}
-            </MenubarContent>
-          )}
-        </MenubarMenu>
-      ))}
-    </Menubar>
+    <div className="w-full flex flex-row items-center justify-between">
+      <Menubar key={menuNode.id} className={`border-0`}>
+        {menuNode.children?.map((menuNode) => (
+          <MenubarMenu key={menuNode.id}>
+            <MenubarTrigger>{menuNode.label}</MenubarTrigger>
+            {menuNode.children && (
+              <MenubarContent>
+                {menuNode.children.map((item) => renderSubMenu(item))}
+              </MenubarContent>
+            )}
+          </MenubarMenu>
+        ))}
+      </Menubar>
+
+      <TooltipWrapper content={"manage layout"}>
+        <div
+          className={`h-[40px] w-[40px] flex items-center cursor-pointer`}
+          onClick={() => {
+            setIsManagingLayout((prevState: boolean) => !prevState);
+          }}
+        >
+          <Icon
+            name="LayoutDashboard"
+            className={`h-[35px] w-[35px] hover:bg-gray-200 rounded-lg p-[7px] ${isManagingLayout && "text-amber-400"}`}
+          />
+        </div>
+      </TooltipWrapper>
+    </div>
   );
 };
 

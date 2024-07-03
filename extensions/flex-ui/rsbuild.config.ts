@@ -17,7 +17,7 @@ export default defineConfig({
       config.output!.uniqueName = "flex_ui";
       appendPlugins([
         new ModuleFederationPlugin({
-          name: "flex_business",
+          name: "flex_ui",
           exposes: {
             "./button": "./src/button.tsx",
             "./module": "./src/module.ts",

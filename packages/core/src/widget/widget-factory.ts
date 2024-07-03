@@ -55,7 +55,10 @@ export class WidgetManager {
     factoryId: string,
     options?: any,
   ): Promise<T> {
+    console.log("factoryId: ", factoryId);
+    console.log("options: ", options);
     const key = this.toKey({ factoryId, options });
+    console.log("key: ", key);
     let widget = this.widgets.get(key) as T | undefined;
 
     if (widget) {

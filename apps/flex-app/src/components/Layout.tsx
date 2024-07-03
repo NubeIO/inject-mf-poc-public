@@ -6,25 +6,93 @@ import { WidgetManager, TYPES, Widget } from "@nubeio/flex-core";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@nubeio/ui/tabs";
 import LeftTree from "./Tree";
 import { Button } from "@nubeio/ui/button";
+import axios from "axios";
+import {
+  init,
+  loadRemote,
+  registerRemotes,
+} from "@module-federation/enhanced/runtime";
+
+import { ExtensionType } from "../flexApp.type";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@nubeio/ui/resizable";
+import { Badge } from "@nubeio/ui/badge";
+import { ExpandButton } from "./layout/ExpandButton";
+import { TreeViewElement } from "@nubeio/ui/modified-menu-tree/tree-view-api";
+import { MenuTreeUniversal } from "./layout/menu-trees/MenuTreeUniversal";
+import { MenuTreeCustom } from "./layout/menu-trees/MenuTreeCustom";
+import { ExtensionMenu } from "./layout/ExtensionMenu";
+import { MainDisplay } from "./layout/MainDisplay";
 
 interface ChildComponentProps {}
 
+const minSize = 15;
+const maxSize = 35;
+
 export const ChildComponent: React.FC<ChildComponentProps> = () => {
-  const menuRegistry = useInjection<WidgetManager>(TYPES.WidgetManager);
+  const widgetManager = useInjection<WidgetManager>(TYPES.WidgetManager);
   const [widgets, setWidgets] = useState<Map<string, Widget>>(new Map());
   const [selectedWidget, setSelectedWidget] = useState<string | undefined>();
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isSupervisorMenuExpanded, setIsSupervisorMenuExpanded] =
+    useState(false);
+  const [isCustomMenuExpanded, setIsCustomMenuExpanded] = useState(false);
+  const [extensionManifest, setExtensionManifest] = useState<ExtensionType[]>(
+    []
+  );
+  const [customMenuName, setCustomMenuName] = useState<string>(
+    "Application Specific Menu"
+  );
+  const [customMenuItems, setCustomMenuItems] = useState<TreeViewElement[]>([]);
+  const [nodeTree, setNodeTree] = useState<TreeViewElement[]>([]);
+  const [isManagingLayout, setIsManagingLayout] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const response: any = await axios.get("http://localhost:4000/manifest");
+      if (!response || !response?.data?.manifest) return;
+      setExtensionManifest(response.data.manifest);
+      console.log("registry", response?.data?.manifest);
+
+      await init({
+        name: "host",
+        remotes: response?.data?.manifest,
+      });
+    })();
+  }, []);
+
+  useEffect(() => {
+    setCustomMenuName("Test");
+    setCustomMenuItems([
+      {
+        id: "1",
+        name: "Test",
+        children: [],
+      },
+    ]);
+    setNodeTree([
+      {
+        id: "root",
+        name: "R-1",
+        children: [],
+      },
+    ]);
+  }, []);
 
   const onUpdateSelectedTab = (tab: string | undefined) => {
     setSelectedWidget(tab);
   };
 
   const onCloseWidget = (tab: string) => {
-    menuRegistry.onCloseWidget(tab);
+    widgetManager.onCloseWidget(tab);
   };
 
   useEffect(() => {
     const updateWidgets = () => {
-      const newWidgets = new Map(menuRegistry.widgets);
+      const newWidgets = new Map(widgetManager.widgets);
       setWidgets(newWidgets);
       if (newWidgets.size > 0 && !selectedWidget) {
         setSelectedWidget(newWidgets.keys().next().value);
@@ -35,21 +103,93 @@ export const ChildComponent: React.FC<ChildComponentProps> = () => {
       onUpdateSelectedTab(key);
     };
 
-    menuRegistry.onWidgetChange(updateWidgets);
-    menuRegistry.onWidgetOpened(handleWidgetOpened);
+    widgetManager.onWidgetChange(updateWidgets);
+    widgetManager.onWidgetOpened(handleWidgetOpened);
     updateWidgets();
 
     return () => {
-      menuRegistry.removeOnWidgetChange(updateWidgets);
-      menuRegistry.removeOnWidgetOpened(handleWidgetOpened);
+      widgetManager.removeOnWidgetChange(updateWidgets);
+      widgetManager.removeOnWidgetOpened(handleWidgetOpened);
     };
-  }, [menuRegistry, selectedWidget]);
+  }, [widgetManager, selectedWidget]);
 
   return (
     <div className="flex flex-col h-screen">
-      <LayoutMenu />
+      <LayoutMenu
+        isManagingLayout={isManagingLayout}
+        setIsManagingLayout={setIsManagingLayout}
+      />
       <div className="flex flex-1">
-        <LeftTree />
+        <div id="content-panel" className={`w-full h-full flex flex-row`}>
+          <ExtensionMenu
+            isMenuCollapsed={isCollapsed}
+            menuItems={extensionManifest}
+          />
+          <ResizablePanelGroup
+            id={"main-content-resize-group"}
+            direction="horizontal"
+            className={`h-full w-full border-t`}
+          >
+            <ResizablePanel
+              defaultSize={minSize}
+              collapsible
+              minSize={minSize}
+              maxSize={maxSize}
+              onCollapse={() => setIsCollapsed(true)}
+              onExpand={() => setIsCollapsed(false)}
+            >
+              <div className="flex flex-col h-full items-center justify-start p-[5px]">
+                <ResizablePanelGroup direction="vertical">
+                  <ResizablePanel defaultSize={50}>
+                    <div className="flex flex-col h-full items-start justify-start pt-[5px]">
+                      <div className="flex flex-row w-full items-center justify-between">
+                        <Badge className="text-sm m-[5px]">
+                          Supervisor View
+                        </Badge>
+                        <ExpandButton
+                          isExpanded={isSupervisorMenuExpanded}
+                          setIsExpanded={setIsSupervisorMenuExpanded}
+                        />
+                      </div>
+                      <MenuTreeUniversal
+                        menuItems={nodeTree}
+                        isExpanded={isSupervisorMenuExpanded}
+                      />
+                    </div>
+                  </ResizablePanel>
+                  <ResizableHandle withHandle />
+                  <ResizablePanel defaultSize={50}>
+                    <div className="flex flex-col h-full items-start justify-start pt-[5px]">
+                      <div className="flex flex-row w-full items-center justify-between">
+                        <Badge className="text-sm m-[5px]">
+                          {customMenuName}
+                        </Badge>
+                        <ExpandButton
+                          isExpanded={isCustomMenuExpanded}
+                          setIsExpanded={setIsCustomMenuExpanded}
+                        />
+                      </div>
+                      <MenuTreeCustom
+                        menuItems={customMenuItems}
+                        isExpanded={isCustomMenuExpanded}
+                      />
+                    </div>
+                  </ResizablePanel>
+                </ResizablePanelGroup>
+              </div>
+            </ResizablePanel>
+            <ResizableHandle withHandle />
+            <ResizablePanel defaultSize={100 - minSize}>
+              <div id="nube-main-content-container" className="w-full h-full">
+                <MainDisplay
+                  extensionManifest={extensionManifest}
+                  isManagingLayout={isManagingLayout}
+                />
+              </div>
+            </ResizablePanel>
+          </ResizablePanelGroup>
+        </div>
+        {/* <LeftTree />
         <div className="flex-1">
           {widgets.size === 0 ? (
             <WelcomeLayout />
@@ -90,7 +230,7 @@ export const ChildComponent: React.FC<ChildComponentProps> = () => {
               ))}
             </Tabs>
           )}
-        </div>
+        </div> */}
       </div>
     </div>
   );

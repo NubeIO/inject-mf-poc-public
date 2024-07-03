@@ -28,8 +28,8 @@ export default class FlowComponent implements Widget {
 
   render(): ReactNode {
     return (
-      <div className="h-full">
-        <Badge className="absolute right-2">Hello from Flex UI</Badge>
+      <div className="w-full h-full">
+        {/* <Badge className="absolute right-2">Hello from Flex UI</Badge> */}
         <ReactFlowProvider>
           <ReactFlow nodes={this.nodes}>
             <Background />
