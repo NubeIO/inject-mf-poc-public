@@ -10,6 +10,7 @@
     "preview": "rsbuild preview"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.7.0",
     "@module-federation/enhanced": "^0.2.0",
     "@nubeio/flex-core": "workspace:*",
     "@nubeio/ui": "workspace:*",
@@ -17,7 +18,9 @@
     "inversify-react": "^1.1.1",
     "lucide-react": "^0.399.0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.52.1",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@nubeio/eslint-config": "workspace:*",

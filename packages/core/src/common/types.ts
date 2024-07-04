@@ -1,5 +1,9 @@
 import { ReactNode } from "react";
 
+
+
+import { LayoutRegistry } from "../layouts";
+
 export type MaybePromise<T> = T | PromiseLike<T>;
 export interface Widget {
   name: string;
@@ -13,4 +17,5 @@ export const TYPES = {
   OpenService: Symbol.for("OpenService"),
   WidgetManager: Symbol.for("WidgetManager"),
   WidgetFactory: Symbol.for("WidgetFactory"),
+  LayoutRegistry: Symbol.for("LayoutRegistry"),
 };

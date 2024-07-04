@@ -1,30 +1,37 @@
-import { memo } from "react";
-import { Icon } from "@nubeio/ui/universal-icon";
-import { TooltipWrapper } from "@nubeio/ui/tooltip-wrapper";
-import { SettingsMenu } from "../layout/SettingsMenu";
-// import { useApi } from "../App";
+import { memo, useEffect, useState } from "react"
+import { Icon } from "@nubeio/ui/universal-icon"
+import { TooltipWrapper } from "@nubeio/ui/tooltip-wrapper"
+import { SettingsMenu } from "../layout/SettingsMenu"
+import { useInjection } from "inversify-react"
+import { TYPES, LayoutRegistry, AllLayouts } from "@nubeio/flex-core"
 
-// import {
-//   init,
-//   loadRemote,
-//   registerRemotes,
-// } from "@module-federation/enhanced/runtime";
-// import { ExtensionType } from "../extensions.type";
+import { Separator } from "@nubeio/ui/separator"
+import { LayoutCreation } from "./LayoutCreationPopover"
 
 const menuItemBaseStyle =
-  "h-[50px] w-full flex items-center justify-center cursor-pointer";
+  "h-[50px] w-full flex items-center justify-center cursor-pointer"
+export const cardStyle = `h-[34px] w-[34px] hover:bg-gray-200 rounded-lg p-[7px]`
+
 export const ExtensionMenu = memo((props: any) => {
-  const { isMenuCollapsed, menuItems } = props;
-  // const { test, setSingleAppDisplay } = useApi();
+  const { isMenuCollapsed, menuItems } = props
+  const layoutRegistry = useInjection<LayoutRegistry>(TYPES.LayoutRegistry)
+  const [allLayouts, setAllLayouts] = useState<AllLayouts>({})
 
-  const cardStyle = `h-[34px] w-[34px] hover:bg-gray-200 rounded-lg p-[7px] `;
+  useEffect(() => {
+    const layoutChangeCallback = () => {
+      const updatedLayouts = { ...layoutRegistry.getAllLayouts }
+      console.log("layout changed: ", updatedLayouts)
 
-  // const handleLoadSingleApp = async (item: ExtensionType) => {
-  //   const res: any = await loadRemote(item.url);
-  //   const Extension = res.default;
-  //   console.log("Extension", Extension);
-  //   setSingleAppDisplay(<Extension api={useApi} />);
-  // };
+      setAllLayouts(updatedLayouts)
+    }
+    // call once to get the initial layouts
+    layoutChangeCallback()
+
+    layoutRegistry.onLayoutChange(layoutChangeCallback)
+    return () => {
+      layoutRegistry.removeOnLayoutChange(layoutChangeCallback)
+    }
+  }, [layoutRegistry])
 
   return (
     <div
@@ -37,15 +44,39 @@ export const ExtensionMenu = memo((props: any) => {
           return (
             <TooltipWrapper content={item.name}>
               <div key={index} className={`${menuItemBaseStyle}`}>
+                <Icon name={item.icon} className={cardStyle} />
+              </div>
+            </TooltipWrapper>
+          )
+        })}
+        <Separator className="my-[5px] w-full" />
+        {Object.keys(allLayouts).map((key: string) => {
+          const layout = allLayouts[key]
+          const handleSelectLayout = () => {
+            layoutRegistry.setSelectedLayout = layout
+          }
+          return (
+            <TooltipWrapper content={layout.name}>
+              <div
+                key={key}
+                className={`${menuItemBaseStyle}`}
+                onClick={handleSelectLayout}
+              >
                 <Icon
-                  name={item.icon}
+                  name={layout.icon || "LayoutDashboard"}
                   className={cardStyle}
-                  // onClick={() => handleLoadSingleApp(item)}
                 />
               </div>
             </TooltipWrapper>
-          );
+          )
         })}
+        <TooltipWrapper content={"create new layout"}>
+          <LayoutCreation>
+            <div key={"add_layout"} className={`${menuItemBaseStyle}`}>
+              <Icon name={"Plus"} className={cardStyle} />
+            </div>
+          </LayoutCreation>
+        </TooltipWrapper>
       </div>
 
       <div className="w-[50px] flex flex-col items-center">
@@ -58,5 +89,5 @@ export const ExtensionMenu = memo((props: any) => {
         </SettingsMenu>
       </div>
     </div>
-  );
-});
+  )
+})
