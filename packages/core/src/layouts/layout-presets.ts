@@ -1,7 +1,6 @@
+import { H, V } from "../constants";
 import { PanelPresetModes } from "./layout-type";
 
-const H = "horizontal";
-const V = "vertical";
 
 export const onePanel = () => {
   return {
@@ -9,6 +8,7 @@ export const onePanel = () => {
     style: H,
     parentId: null,
     content: null,
+    contentUrl: null,
     children: [],
   };
 };
@@ -21,6 +21,7 @@ export const twoPanel = (mode: PanelPresetModes) => {
     style: topLevelMode === H ? H : V,
     parentId: null,
     content: null,
+    contentUrl: null,
     children: [
       {
         id: "b",
@@ -28,6 +29,7 @@ export const twoPanel = (mode: PanelPresetModes) => {
         parentId: "a",
         children: [],
         content: null,
+        contentUrl: null,
       },
       {
         id: "c",
@@ -35,6 +37,7 @@ export const twoPanel = (mode: PanelPresetModes) => {
         parentId: "a",
         children: [],
         content: null,
+        contentUrl: null,
       },
     ],
   };
@@ -48,6 +51,7 @@ export const threePanel = (mode: PanelPresetModes) => {
     style: topLevelMode === H ? H : V,
     parentId: null,
     content: null,
+    contentUrl: null,
     children: [
       {
         id: "b",
@@ -62,6 +66,7 @@ export const threePanel = (mode: PanelPresetModes) => {
                   parentId: "b",
                   children: [],
                   content: null,
+                  contentUrl: null,
                 },
                 {
                   id: "d",
@@ -69,14 +74,16 @@ export const threePanel = (mode: PanelPresetModes) => {
                   parentId: "b",
                   children: [],
                   content: null,
+                  contentUrl: null,
                 },
               ]
             : [],
         content: null,
+        contentUrl: null,
       },
       {
         id: "c",
-        style: V,
+        style: topLevelMode === H ? V : H,
         parentId: "a",
         children:
           subLevelMode === "r"
@@ -88,6 +95,7 @@ export const threePanel = (mode: PanelPresetModes) => {
                   parentId: "c",
                   children: [],
                   content: null,
+                  contentUrl: null,
                 },
                 {
                   id: "f",
@@ -95,9 +103,11 @@ export const threePanel = (mode: PanelPresetModes) => {
                   parentId: "c",
                   children: [],
                   content: null,
+                  contentUrl: null,
                 },
               ],
         content: null,
+        contentUrl: null,
       },
     ],
   };
@@ -109,6 +119,7 @@ export const fourPanel = () => {
     style: H,
     parentId: null,
     content: null,
+    contentUrl: null,
     children: [
       {
         id: "b",
@@ -121,6 +132,7 @@ export const fourPanel = () => {
             parentId: "b",
             children: [],
             content: null,
+            contentUrl: null,
           },
           {
             id: "d",
@@ -128,9 +140,11 @@ export const fourPanel = () => {
             parentId: "b",
             children: [],
             content: null,
+            contentUrl: null,
           },
         ],
         content: null,
+        contentUrl: null,
       },
       {
         id: "e",
@@ -143,6 +157,7 @@ export const fourPanel = () => {
             parentId: "e",
             children: [],
             content: null,
+            contentUrl: null,
           },
           {
             id: "g",
@@ -150,9 +165,11 @@ export const fourPanel = () => {
             parentId: "e",
             children: [],
             content: null,
+            contentUrl: null,
           },
         ],
         content: null,
+        contentUrl: null,
       },
     ],
   };

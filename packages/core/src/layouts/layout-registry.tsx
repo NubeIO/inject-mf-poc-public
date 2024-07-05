@@ -1,40 +1,109 @@
+import React from "react";
+import { init, loadRemote } from "@module-federation/enhanced/runtime";
+import axios from "axios";
 import { injectable } from "inversify";
 
 import { generateUuid } from "@nubeio/ui";
 
+import { LAYOUT_LOCAL_STORAGE_KEY, presetIdArr } from "../constants";
 import { fourPanel, onePanel, threePanel, twoPanel } from "./layout-presets";
 import {
   AllLayouts,
+  ChangeListener,
   Layout,
   LayoutConfig,
-  panelPresetArr,
   PanelPresetModes,
   PresetID,
-  presetIdArr,
 } from "./layout-type";
-
-type ChangeListener = () => void;
 
 @injectable()
 export class LayoutRegistry {
   protected allLayouts: AllLayouts = {};
-  protected selectedLaout: Layout | undefined = undefined;
+  protected selectedLayout: Layout | undefined = undefined;
   private layoutChangeListeners = new Set<ChangeListener>();
   private layoutSelectedListeners = new Set<ChangeListener>();
+
+  constructor() {
+    const storedLayouts = localStorage.getItem(LAYOUT_LOCAL_STORAGE_KEY);
+    if (storedLayouts) {
+      // this.allLayouts = JSON.parse(storedLayouts);
+      // parsedLayouts contains the saved layouts, however, the content of each none empty layout needs to be repopulated
+      // this is due to the fact that the content of a layout is a react component and it cannot be serialised and saved in local storage
+      const parsedLayouts = JSON.parse(storedLayouts);
+      console.log("parsedLayouts is: ", { ...parsedLayouts });
+      (async () => {
+        const response: any = await axios.get("http://localhost:4000/manifest");
+        if (!response || !response?.data?.manifest) return;
+        console.log("manifest is: ", response?.data?.manifest);
+
+        await init({
+          name: "host",
+          remotes: response?.data?.manifest,
+        });
+        for (const key in parsedLayouts) {
+          const singleLayout = parsedLayouts[key];
+          console.log("singleLayout is: ", singleLayout);
+          const newLayout: Layout = {
+            ...singleLayout,
+            layout: await this.traverseAndPopulate(singleLayout.layout),
+          };
+          parsedLayouts[key] = newLayout;
+        }
+        console.log("parsed layouts is: ", parsedLayouts);
+        this.allLayouts = parsedLayouts;
+        this.notifyLayoutChangeListeners();
+      })();
+    }
+  }
 
   get getAllLayouts(): AllLayouts {
     return this.allLayouts;
   }
   get getSelectedLayout(): Layout | undefined {
-    return this.selectedLaout;
+    return this.selectedLayout;
   }
 
+  set setAllLayouts(layouts: AllLayouts) {
+    this.allLayouts = layouts;
+    this.notifyLayoutChangeListeners();
+  }
   set setSelectedLayout(layout: Layout | undefined) {
     if (!layout) return;
-    this.selectedLaout = layout;
+    this.selectedLayout = layout;
     this.notifySelectedLayoutChangeListeners();
     this.allLayouts[layout.id] = layout;
     this.notifyLayoutChangeListeners();
+  }
+
+  async loadRemoteModuleByUrl(url: string): Promise<any> {
+    const res: any = await loadRemote(url);
+    const Extension = res.default;
+    return <Extension />;
+  }
+
+  async traverseAndPopulate(singleLayout: LayoutConfig) {
+    if (singleLayout.children.length === 0) {
+      if (singleLayout.content && singleLayout.contentUrl) {
+        const content = await this.loadRemoteModuleByUrl(
+          singleLayout.contentUrl,
+        );
+        return {
+          ...singleLayout,
+          content: content,
+        };
+      }
+      return singleLayout;
+    } else {
+      const children: LayoutConfig[] = await Promise.all(
+        singleLayout.children.map(async (child: LayoutConfig) => {
+          return await this.traverseAndPopulate(child);
+        }),
+      );
+      return {
+        ...singleLayout,
+        children: children,
+      };
+    }
   }
 
   registerLayout(
@@ -78,7 +147,22 @@ export class LayoutRegistry {
   }
 
   removeLayout(id: string): void {
+    if (!this.allLayouts[id]) return;
     this.remove(id);
+    this.notifyLayoutChangeListeners();
+    if (this.selectedLayout && this.selectedLayout.id === id) {
+      this.selectedLayout = undefined;
+      this.notifySelectedLayoutChangeListeners();
+    }
+  }
+
+  persistLayouts(): void {
+    console.log("persisting layouts");
+    console.log("allLayouts is: ", this.allLayouts);
+    localStorage.setItem(
+      LAYOUT_LOCAL_STORAGE_KEY,
+      JSON.stringify(this.allLayouts),
+    );
   }
 
   private add(newLayout: Layout): void {
@@ -97,6 +181,9 @@ export class LayoutRegistry {
     this.layoutChangeListeners.delete(listener);
   }
   private notifyLayoutChangeListeners(): void {
+    // persist layouts
+    this.persistLayouts();
+    // notify all listeners
     for (const listener of this.layoutChangeListeners) {
       listener();
     }
@@ -114,12 +201,32 @@ export class LayoutRegistry {
     }
   }
 
+  changeLayoutContent = (
+    selectedPanel: LayoutConfig,
+    content: React.ReactNode,
+    extensionUrl: string | null,
+  ) => {
+    if (!this.selectedLayout) return;
+    // create a copy of the initial layout and modify it
+    const copy: LayoutConfig = { ...this.selectedLayout.layout };
+    // locate the selected panel in the layout and update its content
+    const currentPanel = this.findPanelById(copy, selectedPanel.id);
+    if (currentPanel === null) return;
+    currentPanel.content = content;
+    currentPanel.contentUrl = extensionUrl;
+
+    this.selectedLayout.layout = copy;
+
+    this.notifyLayoutChangeListeners();
+    this.notifySelectedLayoutChangeListeners();
+  };
+
   changeLayout = (
     selectedPanel: LayoutConfig,
     orientation: string,
     op: string,
   ) => {
-    if (!this.selectedLaout) return;
+    if (!this.selectedLayout) return;
 
     const newConfig = {
       id: generateUuid(),
@@ -127,10 +234,11 @@ export class LayoutRegistry {
       parentId: selectedPanel.parentId,
       children: [],
       content: null,
+      contentUrl: null,
     };
 
     // create a copy of the initial layout and modify it
-    const copy: LayoutConfig = { ...this.selectedLaout.layout };
+    const copy: LayoutConfig = { ...this.selectedLayout.layout };
 
     const traverseAndModify = (copyLayout: LayoutConfig) => {
       // find the parent of the current selected panel
@@ -169,6 +277,7 @@ export class LayoutRegistry {
                 { ...newConfig, parentId: newParentId },
               ],
               content: null,
+              contentUrl: null,
             };
             parent.children[positionInChildrenArray] = newParent;
           }
@@ -238,7 +347,8 @@ export class LayoutRegistry {
       traverseAndModify(copy);
     }
 
-    this.selectedLaout.layout = copy;
+    this.selectedLayout.layout = copy;
+    this.notifyLayoutChangeListeners();
     this.notifySelectedLayoutChangeListeners();
   };
 

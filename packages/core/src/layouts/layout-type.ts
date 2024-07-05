@@ -1,9 +1,12 @@
+import { panelPresetArr, presetIdArr } from "../constants";
+
 export type LayoutConfig = {
   id: string;
   style: string;
   parentId: string | null;
   children: LayoutConfig[];
   content: React.ReactNode | null;
+  contentUrl: string | null;
 };
 
 export type Layout = {
@@ -23,12 +26,12 @@ export type LayoutPresetType = {
   layoutMode: PanelPresetModes | undefined;
 };
 
-export const presetIdArr = ["one", "two", "three", "four"] as const;
-export const panelPresetArr = [
-  "horizontal-n",
-  "vertical-n",
-  "horizontal-r",
-  "vertical-r",
-];
 export type PresetID = (typeof presetIdArr)[number];
 export type PanelPresetModes = (typeof panelPresetArr)[number];
+
+export type ChangeListener = () => void;
+
+export type LayoutContextMenuProps = {
+  children: React.ReactNode;
+  layout: Layout;
+};

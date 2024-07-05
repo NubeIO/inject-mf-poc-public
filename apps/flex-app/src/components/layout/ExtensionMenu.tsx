@@ -3,7 +3,18 @@ import { Icon } from "@nubeio/ui/universal-icon"
 import { TooltipWrapper } from "@nubeio/ui/tooltip-wrapper"
 import { SettingsMenu } from "../layout/SettingsMenu"
 import { useInjection } from "inversify-react"
-import { TYPES, LayoutRegistry, AllLayouts } from "@nubeio/flex-core"
+import {
+  TYPES,
+  LayoutRegistry,
+  AllLayouts,
+  LayoutContextMenuProps,
+} from "@nubeio/flex-core"
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "@nubeio/ui/context-menu"
 
 import { Separator } from "@nubeio/ui/separator"
 import { LayoutCreation } from "./LayoutCreationPopover"
@@ -20,8 +31,6 @@ export const ExtensionMenu = memo((props: any) => {
   useEffect(() => {
     const layoutChangeCallback = () => {
       const updatedLayouts = { ...layoutRegistry.getAllLayouts }
-      console.log("layout changed: ", updatedLayouts)
-
       setAllLayouts(updatedLayouts)
     }
     // call once to get the initial layouts
@@ -55,19 +64,26 @@ export const ExtensionMenu = memo((props: any) => {
           const handleSelectLayout = () => {
             layoutRegistry.setSelectedLayout = layout
           }
+
+          const selectedLayoutId = layoutRegistry.getSelectedLayout?.id
+          const isSelected = selectedLayoutId
+            ? selectedLayoutId === layout.id
+            : false
           return (
-            <TooltipWrapper content={layout.name}>
-              <div
-                key={key}
-                className={`${menuItemBaseStyle}`}
-                onClick={handleSelectLayout}
-              >
-                <Icon
-                  name={layout.icon || "LayoutDashboard"}
-                  className={cardStyle}
-                />
-              </div>
-            </TooltipWrapper>
+            <LayoutContextMenu layout={layout}>
+              <TooltipWrapper content={layout.name}>
+                <div
+                  key={key}
+                  className={`${menuItemBaseStyle}`}
+                  onClick={handleSelectLayout}
+                >
+                  <Icon
+                    name={layout.icon || "LayoutDashboard"}
+                    className={`${cardStyle} ${isSelected ? "bg-amber-400" : ""}`}
+                  />
+                </div>
+              </TooltipWrapper>
+            </LayoutContextMenu>
           )
         })}
         <TooltipWrapper content={"create new layout"}>
@@ -89,5 +105,25 @@ export const ExtensionMenu = memo((props: any) => {
         </SettingsMenu>
       </div>
     </div>
+  )
+})
+
+const LayoutContextMenu = memo((props: LayoutContextMenuProps) => {
+  const { children, layout } = props
+  const layoutRegistry = useInjection<LayoutRegistry>(TYPES.LayoutRegistry)
+
+  const handleRemoveLayout = () => {
+    layoutRegistry.removeLayout(layout.id)
+  }
+
+  return (
+    <ContextMenu>
+      <ContextMenuTrigger>{children}</ContextMenuTrigger>
+      <ContextMenuContent>
+        <ContextMenuItem onClick={handleRemoveLayout}>
+          Remove Layout
+        </ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenu>
   )
 })

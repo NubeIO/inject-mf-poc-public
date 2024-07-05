@@ -64,7 +64,7 @@ const LayoutPresets: LayoutPresetType[] = [
   {
     iconName: "PanelsTopLeft",
     numOfPanels: "three",
-    layoutMode: "vertical-r",
+    layoutMode: "vertical-n",
   },
   {
     iconName: "Table2",

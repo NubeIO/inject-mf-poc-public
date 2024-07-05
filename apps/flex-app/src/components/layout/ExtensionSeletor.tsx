@@ -20,7 +20,7 @@ import {
 import { loadRemote } from "@module-federation/enhanced/runtime"
 
 export const WidgetSelection = (props: any) => {
-  const { children, extensionManifest, setLayout, selectedPanel } = props
+  const { children, extensionManifest, selectedPanel } = props
   const widgetManager = useInjection<WidgetManager>(TYPES.WidgetManager)
   const layoutRegistry = useInjection<LayoutRegistry>(TYPES.LayoutRegistry)
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
@@ -42,6 +42,7 @@ export const WidgetSelection = (props: any) => {
 
   const handleExtensionChange = async (value: string) => {
     let Extension: any = null
+    let extensionUrl = null
     if (value.includes("wires")) {
       const uri = URI.parse(value)
       const queryParams = new URLSearchParams(uri.query)
@@ -54,18 +55,12 @@ export const WidgetSelection = (props: any) => {
     } else {
       const res: any = await loadRemote(value)
       Extension = res.default
+      extensionUrl = value
     }
 
-    setLayout((prevLayout: LayoutConfig) => {
-      // create a copy of the previous layout
-      const copy: LayoutConfig = { ...prevLayout }
-      // find the selected panel in the layout
-      const currentPanel = layoutRegistry.findPanelById(copy, selectedPanel.id)
-      if (currentPanel === null) return copy
-      // add the new extension to the children of the selected panel
-      currentPanel.content = value.includes("wires") ? Extension : <Extension />
-      return copy
-    })
+    // update the layout content
+    const content = value.includes("wires") ? Extension : <Extension />
+    layoutRegistry.changeLayoutContent(selectedPanel, content, extensionUrl)
 
     // close the popover
     setIsPopoverOpen(false)
