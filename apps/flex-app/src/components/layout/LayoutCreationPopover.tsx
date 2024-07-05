@@ -128,15 +128,18 @@ export const LayoutCreation = (props: any) => {
           <div className="flex flex-col items-start gap-y-[5px]">
             {!selectedLayoutMode ? (
               <div className="flex flex-row flex-wrap gap-[5px]">
-                {LayoutPresets.map((preset: LayoutPresetType) => {
-                  return (
-                    <Icon
-                      name={preset.iconName}
-                      className={`${cardStyle} h-[45px] w-[45px]`}
-                      onClick={() => setSelectedLayoutMode(preset)}
-                    />
-                  )
-                })}
+                {LayoutPresets.map(
+                  (preset: LayoutPresetType, index: number) => {
+                    return (
+                      <Icon
+                        key={index}
+                        name={preset.iconName}
+                        className={`${cardStyle} h-[45px] w-[45px]`}
+                        onClick={() => setSelectedLayoutMode(preset)}
+                      />
+                    )
+                  }
+                )}
               </div>
             ) : (
               <Form {...form}>

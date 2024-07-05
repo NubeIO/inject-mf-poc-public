@@ -91,7 +91,9 @@ export const WidgetSelection = (props: any) => {
                   {[...extraOptions, ...extensionManifest].map(
                     (item: any, index: number) => {
                       return (
-                        <SelectItem value={item.url}>{item.name}</SelectItem>
+                        <SelectItem key={item.url} value={item.url}>
+                          {item.name}
+                        </SelectItem>
                       )
                     }
                   )}

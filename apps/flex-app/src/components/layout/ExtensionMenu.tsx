@@ -51,7 +51,7 @@ export const ExtensionMenu = memo((props: any) => {
       <div className="w-[50px] flex flex-col items-center">
         {menuItems.map((item: any, index: number) => {
           return (
-            <TooltipWrapper content={item.name}>
+            <TooltipWrapper key={index} content={item.name}>
               <div key={index} className={`${menuItemBaseStyle}`}>
                 <Icon name={item.icon} className={cardStyle} />
               </div>
@@ -70,7 +70,7 @@ export const ExtensionMenu = memo((props: any) => {
             ? selectedLayoutId === layout.id
             : false
           return (
-            <LayoutContextMenu layout={layout}>
+            <LayoutContextMenu key={key} layout={layout}>
               <TooltipWrapper content={layout.name}>
                 <div
                   key={key}

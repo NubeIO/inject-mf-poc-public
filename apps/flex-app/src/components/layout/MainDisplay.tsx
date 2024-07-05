@@ -109,6 +109,7 @@ export const MainDisplay = memo((props: any) => {
     // if the layout has children then render the resizable panel group
     return (
       <ResizablePanelGroup
+        key={config.id}
         direction={config.style as any}
         className={`w-full h-full p-0`}
       >
@@ -117,7 +118,12 @@ export const MainDisplay = memo((props: any) => {
           const initSize = hasChildren ? 100 / config.children.length : 100
           return (
             <>
-              <ResizablePanel defaultSize={initSize} minSize={20} maxSize={80}>
+              <ResizablePanel
+                key={`${index}-flex-resize-panel`}
+                defaultSize={initSize}
+                minSize={20}
+                maxSize={80}
+              >
                 <div className="flex flex-col w-full h-full items-center justify-center relative">
                   {hasChildren ? (
                     renderLayout(child)

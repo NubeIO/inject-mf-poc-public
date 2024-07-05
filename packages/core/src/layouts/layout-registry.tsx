@@ -7,16 +7,12 @@ import { injectable } from "inversify";
 
 import { generateUuid } from "@nubeio/ui";
 
+
+
 import { LAYOUT_LOCAL_STORAGE_KEY, presetIdArr } from "../constants";
 import { fourPanel, onePanel, threePanel, twoPanel } from "./layout-presets";
-import {
-  AllLayouts,
-  ChangeListener,
-  Layout,
-  LayoutConfig,
-  PanelPresetModes,
-  PresetID,
-} from "./layout-type";
+import { AllLayouts, ChangeListener, Layout, LayoutConfig, PanelPresetModes, PresetID } from "./layout-type";
+
 
 @injectable()
 export class LayoutRegistry {
@@ -334,6 +330,7 @@ export class LayoutRegistry {
               parent.style = sibling.style;
               parent.id = sibling.id;
               parent.content = sibling.content;
+              parent.contentUrl = sibling.contentUrl;
             }
           }
         }
