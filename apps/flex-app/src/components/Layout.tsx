@@ -1,117 +1,105 @@
 import React, { useState, useEffect } from "react";
 import { useInjection } from "inversify-react";
 import { LayoutMenu } from "./Menu";
-import { WelcomeLayout } from "./WelcomeLayout";
-import { WidgetManager, TYPES, Widget } from "@nubeio/flex-core";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@nubeio/ui/tabs";
-import LeftTree from "./Tree";
-import { Button } from "@nubeio/ui/button";
-import axios from "axios";
+import { WelcomeLayout } from "./WelcomeLayout"
 import {
-  init,
-  loadRemote,
-  registerRemotes,
-} from "@module-federation/enhanced/runtime";
+  WidgetManager,
+  ExtensionsLoader,
+  TYPES,
+  Widget,
+  Manifest,
+} from "@nubeio/flex-core"
 
-import { ExtensionType } from "../flexApp.type";
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
-} from "@nubeio/ui/resizable";
-import { Badge } from "@nubeio/ui/badge";
-import { ExpandButton } from "./layout/ExpandButton";
-import { TreeViewElement } from "@nubeio/ui/modified-menu-tree/tree-view-api";
-import { MenuTreeUniversal } from "./layout/menu-trees/MenuTreeUniversal";
-import { MenuTreeCustom } from "./layout/menu-trees/MenuTreeCustom";
-import { ExtensionMenu } from "./layout/ExtensionMenu";
-import { MainDisplay } from "./layout/MainDisplay";
+} from "@nubeio/ui/resizable"
+import { Badge } from "@nubeio/ui/badge"
+import { ExpandButton } from "./layout/ExpandButton"
+import { TreeViewElement } from "@nubeio/ui/modified-menu-tree/tree-view-api"
+import { MenuTreeUniversal } from "./layout/menu-trees/MenuTreeUniversal"
+import { MenuTreeCustom } from "./layout/menu-trees/MenuTreeCustom"
+import { ExtensionMenu } from "./layout/ExtensionMenu"
+import { MainDisplay } from "./layout/MainDisplay"
 
 interface ChildComponentProps {}
 
-const minSize = 15;
-const maxSize = 35;
+const minSize = 15
+const maxSize = 35
 
 export const ChildComponent: React.FC<ChildComponentProps> = () => {
-  const widgetManager = useInjection<WidgetManager>(TYPES.WidgetManager);
-  const [widgets, setWidgets] = useState<Map<string, Widget>>(new Map());
-  const [selectedWidget, setSelectedWidget] = useState<string | undefined>();
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const widgetManager = useInjection<WidgetManager>(TYPES.WidgetManager)
+  const extensionLoader = useInjection<ExtensionsLoader>(TYPES.ExtensionsLoader)
+  const [widgets, setWidgets] = useState<Map<string, Widget>>(new Map())
+  const [selectedWidget, setSelectedWidget] = useState<string | undefined>()
+  const [isCollapsed, setIsCollapsed] = useState(false)
   const [isSupervisorMenuExpanded, setIsSupervisorMenuExpanded] =
-    useState(false);
-  const [isCustomMenuExpanded, setIsCustomMenuExpanded] = useState(false);
-  const [extensionManifest, setExtensionManifest] = useState<ExtensionType[]>(
-    []
-  );
+    useState(false)
+  const [isCustomMenuExpanded, setIsCustomMenuExpanded] = useState(false)
+  const [extensionManifest, setExtensionManifest] = useState<Manifest[]>([])
   const [customMenuName, setCustomMenuName] = useState<string>(
     "Application Specific Menu"
-  );
-  const [customMenuItems, setCustomMenuItems] = useState<TreeViewElement[]>([]);
-  const [nodeTree, setNodeTree] = useState<TreeViewElement[]>([]);
-  const [isManagingLayout, setIsManagingLayout] = useState(false);
+  )
+  const [customMenuItems, setCustomMenuItems] = useState<TreeViewElement[]>([])
+  const [nodeTree, setNodeTree] = useState<TreeViewElement[]>([])
+  const [isManagingLayout, setIsManagingLayout] = useState(false)
 
   useEffect(() => {
-    (async () => {
-      const response: any = await axios.get("http://localhost:4000/manifest");
-      if (!response || !response?.data?.manifest) return;
-      setExtensionManifest(response.data.manifest);
-      console.log("registry", response?.data?.manifest);
-
-      await init({
-        name: "host",
-        remotes: response?.data?.manifest,
-      });
-    })();
-  }, []);
+    const manifestChangeCallback = async () => {
+      setExtensionManifest(extensionLoader.getManifest)
+    }
+    extensionLoader.onManifestChange(manifestChangeCallback)
+  }, [])
 
   useEffect(() => {
-    setCustomMenuName("Test");
+    setCustomMenuName("Test")
     setCustomMenuItems([
       {
         id: "1",
         name: "Test",
         children: [],
       },
-    ]);
+    ])
     setNodeTree([
       {
         id: "root",
         name: "R-1",
         children: [],
       },
-    ]);
-  }, []);
+    ])
+  }, [])
 
   const onUpdateSelectedTab = (tab: string | undefined) => {
-    setSelectedWidget(tab);
-  };
+    setSelectedWidget(tab)
+  }
 
   const onCloseWidget = (tab: string) => {
-    widgetManager.onCloseWidget(tab);
-  };
+    widgetManager.onCloseWidget(tab)
+  }
 
   useEffect(() => {
     const updateWidgets = () => {
-      const newWidgets = new Map(widgetManager.widgets);
-      setWidgets(newWidgets);
+      const newWidgets = new Map(widgetManager.widgets)
+      setWidgets(newWidgets)
       if (newWidgets.size > 0 && !selectedWidget) {
-        setSelectedWidget(newWidgets.keys().next().value);
+        setSelectedWidget(newWidgets.keys().next().value)
       }
-    };
+    }
 
     const handleWidgetOpened = (key: string | undefined) => {
-      onUpdateSelectedTab(key);
-    };
+      onUpdateSelectedTab(key)
+    }
 
-    widgetManager.onWidgetChange(updateWidgets);
-    widgetManager.onWidgetOpened(handleWidgetOpened);
-    updateWidgets();
+    widgetManager.onWidgetChange(updateWidgets)
+    widgetManager.onWidgetOpened(handleWidgetOpened)
+    updateWidgets()
 
     return () => {
-      widgetManager.removeOnWidgetChange(updateWidgets);
-      widgetManager.removeOnWidgetOpened(handleWidgetOpened);
-    };
-  }, [widgetManager, selectedWidget]);
+      widgetManager.removeOnWidgetChange(updateWidgets)
+      widgetManager.removeOnWidgetOpened(handleWidgetOpened)
+    }
+  }, [widgetManager, selectedWidget])
 
   return (
     <div className="flex flex-col h-screen">
@@ -233,5 +221,5 @@ export const ChildComponent: React.FC<ChildComponentProps> = () => {
         </div> */}
       </div>
     </div>
-  );
-};
+  )
+}

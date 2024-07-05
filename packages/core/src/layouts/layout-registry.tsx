@@ -1,18 +1,21 @@
 import React from "react";
-import { init, loadRemote } from "@module-federation/enhanced/runtime";
-import axios from "axios";
-import { injectable } from "inversify";
-
-
+import { loadRemote } from "@module-federation/enhanced/runtime";
+import { inject, injectable } from "inversify";
 
 import { generateUuid } from "@nubeio/ui";
 
-
-
+import { TYPES } from "../common";
 import { LAYOUT_LOCAL_STORAGE_KEY, presetIdArr } from "../constants";
+import { ExtensionsLoader } from "../extensions-loader";
 import { fourPanel, onePanel, threePanel, twoPanel } from "./layout-presets";
-import { AllLayouts, ChangeListener, Layout, LayoutConfig, PanelPresetModes, PresetID } from "./layout-type";
-
+import {
+  AllLayouts,
+  ChangeListener,
+  Layout,
+  LayoutConfig,
+  PanelPresetModes,
+  PresetID,
+} from "./layout-type";
 
 @injectable()
 export class LayoutRegistry {
@@ -20,23 +23,22 @@ export class LayoutRegistry {
   protected selectedLayout: Layout | undefined = undefined;
   private layoutChangeListeners = new Set<ChangeListener>();
   private layoutSelectedListeners = new Set<ChangeListener>();
+  private extensionsLoader: ExtensionsLoader;
 
-  constructor() {
+  constructor(
+    @inject(TYPES.ExtensionsLoader) private _extensionsLoader: ExtensionsLoader,
+  ) {
+    this.extensionsLoader = _extensionsLoader;
     const storedLayouts = localStorage.getItem(LAYOUT_LOCAL_STORAGE_KEY);
     if (storedLayouts) {
       // parsedLayouts contains the saved layouts, however, the content of each none empty layout needs to be repopulated
       // this is due to the fact that the content of a layout is a react component and it cannot be serialised and saved in local storage
       const parsedLayouts = JSON.parse(storedLayouts);
-      (async () => {
-        const response: any = await axios.get("http://localhost:4000/manifest");
-        if (!response || !response?.data?.manifest) return;
-        const manifest = response?.data?.manifest;
-        const manifestUrls = manifest.map((item: any) => item.url);
 
-        await init({
-          name: "host",
-          remotes: manifest,
-        });
+      const manifestChangeCallback = async () => {
+        const manifestUrls = this.extensionsLoader.getManifest.map(
+          (item: any) => item.url,
+        );
         for (const key in parsedLayouts) {
           const singleLayout = parsedLayouts[key];
           const newLayout: Layout = {
@@ -50,7 +52,8 @@ export class LayoutRegistry {
         }
         this.allLayouts = parsedLayouts;
         this.notifyLayoutChangeListeners();
-      })();
+      };
+      this.extensionsLoader.onManifestChange(manifestChangeCallback);
     }
   }
 

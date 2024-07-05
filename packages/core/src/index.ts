@@ -6,3 +6,4 @@ export * from "./core-application";
 export * from "./menu";
 export * from "./widget";
 export * from "./layouts";
+export * from "./extensions-loader";

@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 
 
 
+import { ExtensionsLoader } from "../extensions-loader";
 import { LayoutRegistry } from "../layouts";
 
 export type MaybePromise<T> = T | PromiseLike<T>;
@@ -18,4 +19,5 @@ export const TYPES = {
   WidgetManager: Symbol.for("WidgetManager"),
   WidgetFactory: Symbol.for("WidgetFactory"),
   LayoutRegistry: Symbol.for("LayoutRegistry"),
+  ExtensionsLoader: Symbol.for("ExtensionsLoader"),
 };
