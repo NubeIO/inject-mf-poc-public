@@ -3,6 +3,8 @@ import { init, loadRemote } from "@module-federation/enhanced/runtime";
 import axios from "axios";
 import { injectable } from "inversify";
 
+
+
 import { generateUuid } from "@nubeio/ui";
 
 import { LAYOUT_LOCAL_STORAGE_KEY, presetIdArr } from "../constants";
@@ -26,30 +28,30 @@ export class LayoutRegistry {
   constructor() {
     const storedLayouts = localStorage.getItem(LAYOUT_LOCAL_STORAGE_KEY);
     if (storedLayouts) {
-      // this.allLayouts = JSON.parse(storedLayouts);
       // parsedLayouts contains the saved layouts, however, the content of each none empty layout needs to be repopulated
       // this is due to the fact that the content of a layout is a react component and it cannot be serialised and saved in local storage
       const parsedLayouts = JSON.parse(storedLayouts);
-      console.log("parsedLayouts is: ", { ...parsedLayouts });
       (async () => {
         const response: any = await axios.get("http://localhost:4000/manifest");
         if (!response || !response?.data?.manifest) return;
-        console.log("manifest is: ", response?.data?.manifest);
+        const manifest = response?.data?.manifest;
+        const manifestUrls = manifest.map((item: any) => item.url);
 
         await init({
           name: "host",
-          remotes: response?.data?.manifest,
+          remotes: manifest,
         });
         for (const key in parsedLayouts) {
           const singleLayout = parsedLayouts[key];
-          console.log("singleLayout is: ", singleLayout);
           const newLayout: Layout = {
             ...singleLayout,
-            layout: await this.traverseAndPopulate(singleLayout.layout),
+            layout: await this.traverseAndPopulate(
+              singleLayout.layout,
+              manifestUrls,
+            ),
           };
           parsedLayouts[key] = newLayout;
         }
-        console.log("parsed layouts is: ", parsedLayouts);
         this.allLayouts = parsedLayouts;
         this.notifyLayoutChangeListeners();
       })();
@@ -81,9 +83,16 @@ export class LayoutRegistry {
     return <Extension />;
   }
 
-  async traverseAndPopulate(singleLayout: LayoutConfig) {
+  async traverseAndPopulate(
+    singleLayout: LayoutConfig,
+    manifestUrls: string[],
+  ) {
     if (singleLayout.children.length === 0) {
-      if (singleLayout.content && singleLayout.contentUrl) {
+      if (
+        singleLayout.content &&
+        singleLayout.contentUrl &&
+        manifestUrls.includes(singleLayout.contentUrl)
+      ) {
         const content = await this.loadRemoteModuleByUrl(
           singleLayout.contentUrl,
         );
@@ -92,11 +101,14 @@ export class LayoutRegistry {
           content: content,
         };
       }
-      return singleLayout;
+      return {
+        ...singleLayout,
+        content: null,
+      };
     } else {
       const children: LayoutConfig[] = await Promise.all(
         singleLayout.children.map(async (child: LayoutConfig) => {
-          return await this.traverseAndPopulate(child);
+          return await this.traverseAndPopulate(child, manifestUrls);
         }),
       );
       return {
@@ -157,8 +169,6 @@ export class LayoutRegistry {
   }
 
   persistLayouts(): void {
-    console.log("persisting layouts");
-    console.log("allLayouts is: ", this.allLayouts);
     localStorage.setItem(
       LAYOUT_LOCAL_STORAGE_KEY,
       JSON.stringify(this.allLayouts),
