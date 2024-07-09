@@ -4,7 +4,7 @@ import { create } from "zustand";
 import { Store } from "./common/store";
 
 export type Bears = {
-  bears: number;
+  readonly bears: number;
   increasePopulation: () => void;
   decreasePopulation: () => void;
   removeAllBears: () => void;
@@ -20,7 +20,7 @@ export class BearStore implements Bears, Store<Bears> {
   }));
 
   get bears() {
-    return this.store.getState().bears;
+    return this.getState().bears;
   }
 
   increasePopulation = () => this.getState().increasePopulation();
