@@ -3,6 +3,7 @@ export const MAIN_MENU_BAR: MenuPath = ["menubar"];
 export interface MenuNodeMetadata {
   id?: string;
   label?: string;
+  store?: any;
   execute?(...args: any[]): any | undefined;
 }
 

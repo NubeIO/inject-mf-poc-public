@@ -5,6 +5,7 @@ import { ReactNode } from "react";
 import { ExtensionsLoader } from "../extensions-loader";
 import { LayoutRegistry } from "../layouts";
 
+
 export type MaybePromise<T> = T | PromiseLike<T>;
 export interface Widget {
   name: string;
@@ -20,4 +21,5 @@ export const TYPES = {
   WidgetFactory: Symbol.for("WidgetFactory"),
   LayoutRegistry: Symbol.for("LayoutRegistry"),
   ExtensionsLoader: Symbol.for("ExtensionsLoader"),
+  StoreManager: Symbol.for("StoreManager"),
 };

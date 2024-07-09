@@ -5,7 +5,7 @@ import { ModuleFederationPlugin } from "@module-federation/enhanced/rspack";
 
 export default defineConfig({
   server: {
-    port: 8000,
+    port: 8100,
   },
   tools: {
     rspack: (_, { appendPlugins }) => {
@@ -22,8 +22,8 @@ export default defineConfig({
             "react-dom": { singleton: true },
           },
         }),
-      ]);
+      ])
     },
   },
   plugins: [pluginReact()],
-});
+})

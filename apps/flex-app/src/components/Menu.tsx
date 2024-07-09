@@ -12,11 +12,12 @@ import {
 } from "@nubeio/ui/menubar";
 import { Icon } from "@nubeio/ui/universal-icon";
 import { TooltipWrapper } from "@nubeio/ui/tooltip-wrapper";
+import { Button } from "@nubeio/ui/button"
 
 export const LayoutMenu = (props: any): React.ReactNode => {
-  const { isManagingLayout, setIsManagingLayout } = props;
-  const menuRegistry = useInjection<MenuRegistry>(TYPES.MenuRegistry);
-  const menuNode = menuRegistry.root;
+  const { isManagingLayout, setIsManagingLayout, test, setTest } = props
+  const menuRegistry = useInjection<MenuRegistry>(TYPES.MenuRegistry)
+  const menuNode = menuRegistry.root
 
   return (
     <div className="w-full flex flex-row items-center justify-between">
@@ -33,11 +34,16 @@ export const LayoutMenu = (props: any): React.ReactNode => {
         ))}
       </Menubar>
 
+      <div className="flex flex-row items-center">
+        {test}
+        <Button onClick={() => setTest(test + 1)}>ADD</Button>
+      </div>
+
       <TooltipWrapper content={"manage layout"}>
         <div
           className={`h-[40px] w-[40px] flex items-center cursor-pointer`}
           onClick={() => {
-            setIsManagingLayout((prevState: boolean) => !prevState);
+            setIsManagingLayout((prevState: boolean) => !prevState)
           }}
         >
           <Icon
@@ -47,8 +53,8 @@ export const LayoutMenu = (props: any): React.ReactNode => {
         </div>
       </TooltipWrapper>
     </div>
-  );
-};
+  )
+}
 
 const renderSubMenu = (menuNode: MenuNode): React.ReactNode => {
   if (menuNode.children && menuNode.children.length)

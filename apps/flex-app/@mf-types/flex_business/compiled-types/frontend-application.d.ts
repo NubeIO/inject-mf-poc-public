@@ -1,6 +1,7 @@
-import { MenuRegistry, FrontEndApplication } from "@nubeio/flex-core";
+import { MenuRegistry, FrontEndApplication, StoreManager } from "@nubeio/flex-core";
 export default class FlexBusinessApplication implements FrontEndApplication {
     protected readonly menuRegistry: MenuRegistry;
-    constructor(menuRegistry: MenuRegistry);
+    store: any;
+    constructor(menuRegistry: MenuRegistry, storeManager: StoreManager);
     initialize(): void;
 }

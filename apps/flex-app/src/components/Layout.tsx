@@ -8,6 +8,7 @@ import {
   TYPES,
   Widget,
   Manifest,
+  StoreManager,
 } from "@nubeio/flex-core"
 
 import {
@@ -31,6 +32,8 @@ const maxSize = 35
 export const ChildComponent: React.FC<ChildComponentProps> = () => {
   const widgetManager = useInjection<WidgetManager>(TYPES.WidgetManager)
   const extensionLoader = useInjection<ExtensionsLoader>(TYPES.ExtensionsLoader)
+  const storeManager = useInjection<StoreManager>(TYPES.StoreManager)
+
   const [widgets, setWidgets] = useState<Map<string, Widget>>(new Map())
   const [selectedWidget, setSelectedWidget] = useState<string | undefined>()
   const [isCollapsed, setIsCollapsed] = useState(false)
@@ -44,6 +47,8 @@ export const ChildComponent: React.FC<ChildComponentProps> = () => {
   const [customMenuItems, setCustomMenuItems] = useState<TreeViewElement[]>([])
   const [nodeTree, setNodeTree] = useState<TreeViewElement[]>([])
   const [isManagingLayout, setIsManagingLayout] = useState(false)
+
+  const { test, setTest } = storeManager.getStore()
 
   useEffect(() => {
     const manifestChangeCallback = async () => {
@@ -106,6 +111,8 @@ export const ChildComponent: React.FC<ChildComponentProps> = () => {
       <LayoutMenu
         isManagingLayout={isManagingLayout}
         setIsManagingLayout={setIsManagingLayout}
+        test={test}
+        setTest={setTest}
       />
       <div className="flex flex-1">
         <div id="content-panel" className={`w-full h-full flex flex-row`}>
