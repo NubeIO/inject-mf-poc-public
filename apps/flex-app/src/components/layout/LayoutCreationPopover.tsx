@@ -109,7 +109,6 @@ export const LayoutCreation = (props: any) => {
   })
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log("values: ", values)
     layoutRegistry.registerLayout(
       selectedLayoutMode?.numOfPanels || "one",
       selectedLayoutMode?.layoutMode,
@@ -195,15 +194,10 @@ export const LayoutCreation = (props: any) => {
                           </FormLabel>
                           <Select
                             onValueChange={(val: any) => {
-                              console.log("val is: ", val)
                               setSelectedIndex(val)
-                              // if (listRef.current) {
-                              //   listRef.current.scrollToItem(val)
-                              // }
                               field.onChange(val)
                             }}
                             defaultValue={field.value}
-                            // value={field.value}
                           >
                             <FormControl>
                               <SelectTrigger className="w-full h-[30px]">

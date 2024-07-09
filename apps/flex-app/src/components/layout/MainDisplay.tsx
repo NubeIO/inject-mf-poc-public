@@ -59,6 +59,7 @@ export const MainDisplay = memo((props: any) => {
     const actionGroup = (child: LayoutConfig, floating: boolean) => {
       return (
         <div
+          key={`${child.id}-action-group`}
           className={`w-full h-full flex flex-col items-center justify-center ${floating && "bg-white/80 absolute z-[1]"}`}
         >
           <span className="font-semibold">{child.id}</span>
@@ -136,13 +137,8 @@ export const MainDisplay = memo((props: any) => {
             : 100
           const hasChildren = child.children.length !== 0
           return (
-            <>
-              <ResizablePanel
-                key={`${index}-flex-resize-panel`}
-                defaultSize={initSize}
-                minSize={20}
-                maxSize={80}
-              >
+            <React.Fragment key={`${child.id}-flex-resize-panel`}>
+              <ResizablePanel defaultSize={initSize} minSize={20} maxSize={80}>
                 <div
                   className={`flex flex-col w-full h-full items-center justify-center relative `}
                 >
@@ -150,7 +146,7 @@ export const MainDisplay = memo((props: any) => {
                     renderLayout(child)
                   ) : (
                     <div
-                      className={`w-full h-full relative ${selectedPanel?.id === child.id && "border border-amber-400"}`}
+                      className={`w-full h-full flex flex-col items-center justify-center relative ${selectedPanel?.id === child.id && "border border-amber-400"}`}
                       onClick={(e: any) => {
                         e.stopPropagation()
                         if (selectedPanel?.id !== child.id) {
@@ -175,7 +171,7 @@ export const MainDisplay = memo((props: any) => {
                 </div>
               </ResizablePanel>
               {index !== config.children.length - 1 && <ResizableHandle />}
-            </>
+            </React.Fragment>
           )
         })}
       </ResizablePanelGroup>
