@@ -130,7 +130,7 @@ export const MainDisplay = memo((props: any) => {
         className={`w-full h-full p-0`}
       >
         {config.children.map((child: LayoutConfig, index: number) => {
-          const hasChildren = child.children.length !== 0
+          const hasChildren = config.children.length !== 0
           const initSize = hasChildren ? 100 / config.children.length : 100
           return (
             <>
