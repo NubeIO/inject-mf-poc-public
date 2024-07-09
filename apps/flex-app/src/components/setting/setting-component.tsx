@@ -1,8 +1,13 @@
 import { ReactNode } from "react";
-import { OpenService, TYPES, URI, Widget } from "@nubeio/flex-core";
+import {
+  OpenService,
+  TYPES,
+  URI,
+  Widget,
+  useInjection,
+} from "@nubeio/flex-core";
 import { SettingWidgetOpenerOptions } from "./setting-contribution";
 import { Button } from "@nubeio/ui/button";
-import { useInjection } from "inversify-react";
 
 export default class SettingComponent implements Widget {
   static readonly ID = "widget:settings";

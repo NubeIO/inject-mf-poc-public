@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 
-import { Provider } from "inversify-react";
 import businessContainer from "flex_business/module";
 import uiContainer from "flex_ui/module";
 import appContainer from "./module";
 import coreContainer from "@nubeio/flex-core/module";
 
-import { Container, initializeApplication } from "@nubeio/flex-core";
+import { Container, initializeApplication, Provider } from "@nubeio/flex-core";
 
 import { ChildComponent } from "./components/Layout";
 

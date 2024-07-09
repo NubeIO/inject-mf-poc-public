@@ -22,7 +22,12 @@ const BEARS_SUBMENU_SUBSTRACT = [...BEARS, "2_bears_remove"];
 export default class FlexBusinessApplication implements FrontEndApplication {
   constructor(
     @inject(TYPES.MenuRegistry) protected readonly menuRegistry: MenuRegistry,
-  ) {}
+    @inject(TYPES.BearStore) protected readonly bearsStore: BearStore,
+  ) {
+    this.bearsStore.subscribe((state, preState) => {
+      console.log("Subscribe in Core", state, preState);
+    });
+  }
 
   initialize(): void {
     this.menuRegistry.registerMenuAction(ACCOUNT, {
@@ -43,11 +48,13 @@ export default class FlexBusinessApplication implements FrontEndApplication {
     this.menuRegistry.registerMenuAction(BEARS_SUBMENU_ADD, {
       label: "Increase Population",
       execute: (...args) => {
+        this.bearsStore.increasePopulation();
       },
     });
     this.menuRegistry.registerMenuAction(BEARS_SUBMENU_SUBSTRACT, {
       label: "Descrease Population",
       execute: (...args) => {
+        this.bearsStore.decreasePopulation();
       },
     });
   }

@@ -19,16 +19,22 @@ export class BearStore implements Bears, Store<Bears> {
     removeAllBears: () => set({ bears: 0 }),
   }));
 
-  useStore() {
-    return this.store();
-  }
-
   get bears() {
     return this.store.getState().bears;
   }
 
-  subscribe = this.store.subscribe;
-  increasePopulation = this.store((state) => state.increasePopulation);
-  removeAllBears = this.store((state) => state.removeAllBears);
-  decreasePopulation = this.store((state) => state.decreasePopulation);
+  increasePopulation = () => this.getState().increasePopulation();
+  removeAllBears = () => this.getState().removeAllBears();
+  decreasePopulation = () => this.getState().decreasePopulation();
+
+  useStore(): Bears {
+    return this.store();
+  }
+
+  getState(): Bears {
+    return this.store.getState();
+  }
+
+  subscribe = (listener: (state: Bears, prevState: Bears) => void) =>
+    this.store.subscribe(listener);
 }

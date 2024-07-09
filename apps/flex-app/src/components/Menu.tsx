@@ -1,5 +1,4 @@
-import { MenuNode, MenuRegistry, TYPES } from "@nubeio/flex-core";
-import { useInjection } from "inversify-react";
+import { MenuNode, MenuRegistry, TYPES, useInjection } from "@nubeio/flex-core";
 import {
   Menubar,
   MenubarItem,

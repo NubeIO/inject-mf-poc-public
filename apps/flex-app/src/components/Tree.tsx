@@ -7,6 +7,7 @@ import {
   BearStore,
 } from "@nubeio/flex-core";
 import { Tree, Folder, File } from "@nubeio/ui/tree/tree-view-api";
+import { useEffect } from "react";
 
 const LeftTree = () => {
   const elements = [
@@ -56,6 +57,12 @@ const LeftTree = () => {
   const bearService = useStore<BearStore>(TYPES.BearStore);
   const bears = bearService.bears;
 
+  useEffect(() => {
+    bearService.subscribe((state, prevState) => {
+      console.log("Subscribed in React", state, prevState);
+    });
+  }, [bearService]);
+
   return (
     <Tree
       className="rounded-md w-60 h-60 bg-background overflow-hidden p-2"
@@ -73,7 +80,7 @@ const LeftTree = () => {
           >
             <p>counter.wires</p>
           </File>
-          <File isSelect handleSelect={bearService.increasePopulation} value="21">
+          <File isSelect handleSelect={bearService.removeAllBears} value="21">
             <p>Bears: {bears}</p>
           </File>
           <File
