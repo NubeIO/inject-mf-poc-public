@@ -1,8 +1,14 @@
-import React, { memo, useEffect, useRef, useState } from "react";
-import { useInjection } from "inversify-react";
+import React, {
+  MouseEventHandler,
+  memo,
+  useEffect,
+  useRef,
+  useState,
+} from "react"
+import { useInjection } from "inversify-react"
 import { TYPES, LayoutRegistry, LayoutConfig } from "@nubeio/flex-core"
 
-import { Separator } from "@nubeio/ui/separator";
+import { Separator } from "@nubeio/ui/separator"
 import {
   ResizableHandle,
   ResizablePanel,
@@ -22,6 +28,9 @@ export const MainDisplay = memo((props: any) => {
   const { extensionManifest, isManagingLayout } = props
   const layoutRegistry = useInjection<LayoutRegistry>(TYPES.LayoutRegistry)
   const [layout, setLayout] = useState<LayoutConfig | undefined>(undefined)
+  const [selectedPanel, setSelectedPanel] = useState<LayoutConfig | undefined>(
+    undefined
+  )
 
   useEffect(() => {
     const selectedLayoutChangeCallback = () => {
@@ -29,10 +38,19 @@ export const MainDisplay = memo((props: any) => {
 
       setLayout(updatedSelectedLayout.layout)
     }
+    const selectedPanelChangeCallback = () => {
+      const selectedPanel = layoutRegistry.getCurrentSelectedPanel
+        ? { ...layoutRegistry.getCurrentSelectedPanel }
+        : undefined
+      setSelectedPanel(selectedPanel)
+      console.log("selectedPanel is: ", selectedPanel)
+    }
+
     // call once to get the initial layouts
     selectedLayoutChangeCallback()
 
     layoutRegistry.onSelectedLayoutChange(selectedLayoutChangeCallback)
+    layoutRegistry.onSelectedPanelChange(selectedPanelChangeCallback)
     return () => {
       layoutRegistry.removeOnSelectedLayoutChange(selectedLayoutChangeCallback)
     }
@@ -47,7 +65,6 @@ export const MainDisplay = memo((props: any) => {
           <span className="font-semibold">{child.id}</span>
           <WidgetSelection
             extensionManifest={extensionManifest}
-            setLayout={setLayout}
             selectedPanel={child}
           >
             <CirclePlus className={iconStyle} />
@@ -124,20 +141,34 @@ export const MainDisplay = memo((props: any) => {
                 minSize={20}
                 maxSize={80}
               >
-                <div className="flex flex-col w-full h-full items-center justify-center relative">
+                <div
+                  className={`flex flex-col w-full h-full items-center justify-center relative `}
+                >
                   {hasChildren ? (
                     renderLayout(child)
-                  ) : child.content !== null ? (
-                    isManagingLayout ? (
-                      <>
-                        {actionGroup(child, true)}
-                        {child.content}
-                      </>
-                    ) : (
-                      child.content
-                    )
                   ) : (
-                    actionGroup(child, false)
+                    <div
+                      className={`w-full h-full relative ${selectedPanel?.id === child.id && "border border-amber-400"}`}
+                      onClick={(e: any) => {
+                        e.stopPropagation()
+                        if (selectedPanel?.id !== child.id) {
+                          layoutRegistry.setCurrentSelectedPanel = child
+                        }
+                      }}
+                    >
+                      {child.content !== null ? (
+                        isManagingLayout ? (
+                          <>
+                            {actionGroup(child, true)}
+                            {child.content}
+                          </>
+                        ) : (
+                          child.content
+                        )
+                      ) : (
+                        actionGroup(child, false)
+                      )}
+                    </div>
                   )}
                 </div>
               </ResizablePanel>

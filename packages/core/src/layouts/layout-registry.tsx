@@ -2,20 +2,18 @@ import React from "react";
 import { loadRemote } from "@module-federation/enhanced/runtime";
 import { inject, injectable } from "inversify";
 
+
+
 import { generateUuid } from "@nubeio/ui";
+
+
 
 import { TYPES } from "../common";
 import { LAYOUT_LOCAL_STORAGE_KEY, presetIdArr } from "../constants";
 import { ExtensionsLoader } from "../extensions-loader";
 import { fourPanel, onePanel, threePanel, twoPanel } from "./layout-presets";
-import {
-  AllLayouts,
-  ChangeListener,
-  Layout,
-  LayoutConfig,
-  PanelPresetModes,
-  PresetID,
-} from "./layout-type";
+import { AllLayouts, ChangeListener, Layout, LayoutConfig, PanelPresetModes, PresetID } from "./layout-type";
+
 
 @injectable()
 export class LayoutRegistry {
@@ -23,7 +21,10 @@ export class LayoutRegistry {
   protected selectedLayout: Layout | undefined = undefined;
   private layoutChangeListeners = new Set<ChangeListener>();
   private layoutSelectedListeners = new Set<ChangeListener>();
+  private selectedPanelListeners = new Set<ChangeListener>();
   private extensionsLoader: ExtensionsLoader;
+
+  currentSelectedPanel: LayoutConfig | undefined = undefined;
 
   constructor(
     @inject(TYPES.ExtensionsLoader) private _extensionsLoader: ExtensionsLoader,
@@ -63,6 +64,9 @@ export class LayoutRegistry {
   get getSelectedLayout(): Layout | undefined {
     return this.selectedLayout;
   }
+  get getCurrentSelectedPanel(): LayoutConfig | undefined {
+    return this.currentSelectedPanel;
+  }
 
   set setAllLayouts(layouts: AllLayouts) {
     this.allLayouts = layouts;
@@ -74,6 +78,12 @@ export class LayoutRegistry {
     this.notifySelectedLayoutChangeListeners();
     this.allLayouts[layout.id] = layout;
     this.notifyLayoutChangeListeners();
+    this.currentSelectedPanel = undefined;
+    this.notifySelectedPanelChangeListeners();
+  }
+  set setCurrentSelectedPanel(panel: LayoutConfig | undefined) {
+    this.currentSelectedPanel = panel;
+    this.notifySelectedPanelChangeListeners();
   }
 
   async loadRemoteModuleByUrl(url: string): Promise<any> {
@@ -183,6 +193,7 @@ export class LayoutRegistry {
     delete this.allLayouts[id];
   }
 
+  // listens for all layout changes, where each layout is represented as a selectable icon in the extension menu
   onLayoutChange(listener: ChangeListener): void {
     this.layoutChangeListeners.add(listener);
   }
@@ -198,6 +209,7 @@ export class LayoutRegistry {
     }
   }
 
+  // listens for changes in a particular layout which happens when a panel is split or the content of a panel is changed
   onSelectedLayoutChange(listener: ChangeListener): void {
     this.layoutSelectedListeners.add(listener);
   }
@@ -206,6 +218,19 @@ export class LayoutRegistry {
   }
   private notifySelectedLayoutChangeListeners(): void {
     for (const listener of this.layoutSelectedListeners) {
+      listener();
+    }
+  }
+
+  // listens for changes in the selected panel
+  onSelectedPanelChange(listener: ChangeListener): void {
+    this.selectedPanelListeners.add(listener);
+  }
+  removeOnSelectedPanelChange(listener: ChangeListener): void {
+    this.selectedPanelListeners.delete(listener);
+  }
+  private notifySelectedPanelChangeListeners(): void {
+    for (const listener of this.selectedPanelListeners) {
       listener();
     }
   }
