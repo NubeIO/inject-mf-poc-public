@@ -5,7 +5,7 @@ export type FlowWidgetOpenerOptions = {
   uri: URI;
   id: string | null;
 };
-export declare class FlowContribution extends WidgetOpenHandler<FlowComponent> {
+export default class FlowContribution extends WidgetOpenHandler<FlowComponent> {
   protected readonly widgetManager: WidgetManager;
   readonly id: string;
   constructor(widgetManager: WidgetManager);

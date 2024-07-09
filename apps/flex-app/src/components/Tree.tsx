@@ -1,6 +1,12 @@
-import { TYPES, URI, OpenService } from "@nubeio/flex-core";
+import {
+  TYPES,
+  URI,
+  OpenService,
+  useInjection,
+  useStore,
+  BearStore,
+} from "@nubeio/flex-core";
 import { Tree, Folder, File } from "@nubeio/ui/tree/tree-view-api";
-import { useInjection } from "inversify-react";
 
 const LeftTree = () => {
   const elements = [
@@ -47,6 +53,8 @@ const LeftTree = () => {
     },
   ];
   const openHandler = useInjection<OpenService>(TYPES.OpenService);
+  const bearService = useStore<BearStore>(TYPES.BearStore);
+  const bears = bearService.bears;
 
   return (
     <Tree
@@ -64,6 +72,9 @@ const LeftTree = () => {
             value="21"
           >
             <p>counter.wires</p>
+          </File>
+          <File isSelect handleSelect={bearService.increasePopulation} value="21">
+            <p>Bears: {bears}</p>
           </File>
           <File
             handleSelect={() => {

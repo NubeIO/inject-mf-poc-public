@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useInjection } from "inversify-react";
 import { LayoutMenu } from "./Menu";
 import { WelcomeLayout } from "./WelcomeLayout";
-import { WidgetManager, TYPES, Widget } from "@nubeio/flex-core";
+import { WidgetManager, TYPES, Widget, useInjection } from "@nubeio/flex-core";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@nubeio/ui/tabs";
 import LeftTree from "./Tree";
 import { Button } from "@nubeio/ui/button";

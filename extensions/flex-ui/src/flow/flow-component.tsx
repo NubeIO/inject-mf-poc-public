@@ -3,7 +3,7 @@ import { Widget } from "@nubeio/flex-core";
 import { FlowWidgetOpenerOptions } from "./flow-contribution";
 import ReactFlow, { Controls, Background, ReactFlowProvider } from "reactflow";
 import "reactflow/dist/style.css";
-import { Badge } from "@nubeio/ui/badge"
+import { Badge } from "@nubeio/ui/badge";
 
 export default class FlowComponent implements Widget {
   static readonly ID = "widget:flow";
