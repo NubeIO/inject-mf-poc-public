@@ -15,6 +15,7 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from "@nubeio/ui/context-menu"
+import { loadRemote } from "@module-federation/enhanced/runtime"
 
 import { Separator } from "@nubeio/ui/separator"
 import { LayoutCreation } from "./LayoutCreationPopover"
@@ -42,6 +43,19 @@ export const ExtensionMenu = memo((props: any) => {
     }
   }, [layoutRegistry])
 
+  const handleShowSingleExtension = async (url: string) => {
+    let Extension: any = null
+    let extensionUrl = null
+
+    const res: any = await loadRemote(url)
+    Extension = res.default
+    extensionUrl = url
+
+    // update the layout content
+    const content = <Extension />
+    layoutRegistry.changeToSinglePanelWithContent(content, extensionUrl)
+  }
+
   return (
     <div
       className={`w-[50px] h-full flex flex-col items-center border-t justify-between ${
@@ -50,10 +64,18 @@ export const ExtensionMenu = memo((props: any) => {
     >
       <div className="w-[50px] flex flex-col items-center">
         {menuItems.map((item: any, index: number) => {
+          const isSelected = item.url === layoutRegistry.getSelectedLayout?.id
           return (
             <TooltipWrapper key={index} content={item.name}>
-              <div key={index} className={`${menuItemBaseStyle}`}>
-                <Icon name={item.icon} className={cardStyle} />
+              <div
+                key={index}
+                className={`${menuItemBaseStyle}`}
+                onClick={() => handleShowSingleExtension(item.url)}
+              >
+                <Icon
+                  name={item.icon}
+                  className={`${cardStyle} ${isSelected ? "bg-amber-400" : ""}`}
+                />
               </div>
             </TooltipWrapper>
           )

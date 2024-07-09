@@ -43,7 +43,6 @@ export const MainDisplay = memo((props: any) => {
         ? { ...layoutRegistry.getCurrentSelectedPanel }
         : undefined
       setSelectedPanel(selectedPanel)
-      console.log("selectedPanel is: ", selectedPanel)
     }
 
     // call once to get the initial layouts

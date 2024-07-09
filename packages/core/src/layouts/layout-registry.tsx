@@ -235,6 +235,32 @@ export class LayoutRegistry {
     }
   }
 
+  changeToSinglePanelWithContent = (
+    content: React.ReactNode,
+    extensionUrl: string | null,
+  ) => {
+    const newLayoutConfig: LayoutConfig = {
+      id: generateUuid(),
+      style: "horizontal",
+      parentId: null,
+      children: [],
+      content: content,
+      contentUrl: extensionUrl,
+    };
+
+    const newLayout: Layout = {
+      layout: newLayoutConfig,
+      name: "Single Panel",
+      icon: "",
+      id: extensionUrl || "single-panel",
+    };
+
+    this.selectedLayout = newLayout;
+
+    this.notifyLayoutChangeListeners();
+    this.notifySelectedLayoutChangeListeners();
+  };
+
   changeLayoutContent = (
     selectedPanel: LayoutConfig,
     content: React.ReactNode,
