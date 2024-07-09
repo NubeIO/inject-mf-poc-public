@@ -58,9 +58,13 @@ const LeftTree = () => {
   const bears = bearService.bears;
 
   useEffect(() => {
-    bearService.subscribe((state, prevState) => {
+    const dispose = bearService.subscribe((state, prevState) => {
       console.log("Subscribed in React", state, prevState);
     });
+
+    return function cleanup() {
+      dispose();
+    };
   }, [bearService]);
 
   return (
