@@ -1,6 +1,7 @@
 import { interfaces } from "inversify";
 import { useInjection } from "inversify-react";
-import { StoreApi } from "zustand";
+
+import { use } from "../scope";
 
 export interface Store<T> {
   useStore: () => T;
@@ -11,8 +12,9 @@ export interface Store<T> {
 export function useStore<T extends Store<any>>(
   serviceId: interfaces.ServiceIdentifier<T>,
 ): T {
-  const service = useInjection<T>(serviceId);
-  service.useStore();
-
-  return service as T;
+  return use(useInjection<T>(serviceId))
+    ?.apply(function () {
+      this.useStore();
+    })
+    .item() as T;
 }

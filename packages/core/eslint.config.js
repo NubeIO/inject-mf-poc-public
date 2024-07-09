@@ -11,5 +11,5 @@ export default [
       base: baseConfig,
       react: reactConfig,
     },
-  }
+  },
 ];

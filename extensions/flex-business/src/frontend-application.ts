@@ -52,7 +52,7 @@ export default class FlexBusinessApplication implements FrontEndApplication {
       },
     });
     this.menuRegistry.registerMenuAction(BEARS_SUBMENU_SUBSTRACT, {
-      label: "Descrease Population",
+      label: "Decrease Population",
       execute: (...args) => {
         this.bearsStore.decreasePopulation();
       },
