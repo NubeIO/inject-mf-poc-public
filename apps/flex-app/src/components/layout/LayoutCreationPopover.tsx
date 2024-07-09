@@ -1,4 +1,4 @@
-import { memo, useState } from "react"
+import { useRef, useState } from "react"
 import { useInjection } from "inversify-react"
 import {
   TYPES,
@@ -21,16 +21,27 @@ import { Input } from "@nubeio/ui/input"
 import { Popover, PopoverContent, PopoverTrigger } from "@nubeio/ui/popover"
 import { Icon } from "@nubeio/ui/universal-icon"
 import { cardStyle } from "./ExtensionMenu"
+import * as LucideIcons from "lucide-react"
+import { FixedSizeList } from "react-window"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+import { set, useForm } from "react-hook-form"
 import { z } from "zod"
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectLabel,
+  SelectItem,
+  SelectGroup,
+} from "@nubeio/ui/select"
 
 const formSchema = z.object({
   name: z.string().min(2, {
     message: "Name must be at least 2 characters.",
   }),
-  iconName: z.string().min(2, {
+  iconName: z.string().min(1, {
     message: "Icon name must be at least 2 characters.",
   }),
 })
@@ -73,6 +84,12 @@ const LayoutPresets: LayoutPresetType[] = [
   },
 ]
 
+const iconNames = Object.keys(LucideIcons)
+  .slice(0, -2)
+  .filter((iconName) => {
+    return !iconName.includes("Icon")
+  })
+
 export const LayoutCreation = (props: any) => {
   const { children } = props
   const layoutRegistry = useInjection<LayoutRegistry>(TYPES.LayoutRegistry)
@@ -80,6 +97,8 @@ export const LayoutCreation = (props: any) => {
   const [selectedLayoutMode, setSelectedLayoutMode] = useState<
     LayoutPresetType | undefined
   >(undefined)
+  const [selectedIndex, setSelectedIndex] = useState<string>("")
+  const listRef = useRef<any>()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -90,6 +109,7 @@ export const LayoutCreation = (props: any) => {
   })
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
+    console.log("values: ", values)
     layoutRegistry.registerLayout(
       selectedLayoutMode?.numOfPanels || "one",
       selectedLayoutMode?.layoutMode,
@@ -142,55 +162,97 @@ export const LayoutCreation = (props: any) => {
                 )}
               </div>
             ) : (
-              <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-[5px] w-full"
-                >
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-[15px]">Name</FormLabel>
-                        <FormControl>
-                          <Input
-                            className="w-full h-[30px]"
-                            placeholder="layout name..."
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="iconName"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-[15px]">Icon Name</FormLabel>
-                        <FormControl>
-                          <Input
-                            className="w-full h-[30px]"
-                            placeholder="icon name..."
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormDescription>
-                          A valid icon name from the Lucide icon library.
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <div className="w-full flex flex-row justify-end">
-                    <Button className="mt-[15px]" type="submit">
-                      Create
-                    </Button>
-                  </div>
-                </form>
-              </Form>
+              <>
+                <Form {...form}>
+                  <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="space-y-[5px] w-full"
+                  >
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-[15px]">Name</FormLabel>
+                          <FormControl>
+                            <Input
+                              className="w-full h-[30px]"
+                              placeholder="layout name..."
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="iconName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-[15px]">
+                            Icon Name
+                          </FormLabel>
+                          <Select
+                            onValueChange={(val: any) => {
+                              console.log("val is: ", val)
+                              setSelectedIndex(val)
+                              // if (listRef.current) {
+                              //   listRef.current.scrollToItem(val)
+                              // }
+                              field.onChange(val)
+                            }}
+                            defaultValue={field.value}
+                            // value={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger className="w-full h-[30px]">
+                                <SelectValue>
+                                  <span>{selectedIndex}</span>
+                                </SelectValue>
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectGroup>
+                                <SelectLabel>Available Icons</SelectLabel>
+                                <FixedSizeList
+                                  ref={listRef}
+                                  width={"100%"}
+                                  height={350}
+                                  itemCount={iconNames.length}
+                                  itemSize={30}
+                                >
+                                  {({ index, style, isScrolling }) => (
+                                    <SelectItem
+                                      value={iconNames[index].toString()}
+                                      key={iconNames[index].toString()}
+                                      style={{
+                                        ...style,
+                                      }}
+                                    >
+                                      {iconNames[index]}
+                                    </SelectItem>
+                                  )}
+                                </FixedSizeList>
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+
+                          <FormDescription>
+                            A valid icon name from the Lucide icon library.
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <div className="w-full flex flex-row justify-end">
+                      <Button className="mt-[15px]" type="submit">
+                        Create
+                      </Button>
+                    </div>
+                  </form>
+                </Form>
+              </>
             )}
           </div>
         </div>
