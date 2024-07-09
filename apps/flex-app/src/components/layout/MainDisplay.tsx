@@ -130,8 +130,11 @@ export const MainDisplay = memo((props: any) => {
         className={`w-full h-full p-0`}
       >
         {config.children.map((child: LayoutConfig, index: number) => {
-          const hasChildren = config.children.length !== 0
-          const initSize = hasChildren ? 100 / config.children.length : 100
+          const doesParentHaveChildren = config.children.length !== 0
+          const initSize = doesParentHaveChildren
+            ? 100 / config.children.length
+            : 100
+          const hasChildren = child.children.length !== 0
           return (
             <>
               <ResizablePanel
