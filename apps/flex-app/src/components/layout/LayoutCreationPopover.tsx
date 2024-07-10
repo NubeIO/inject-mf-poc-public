@@ -1,4 +1,4 @@
-import { useRef, useState } from "react"
+import { useRef, useState, forwardRef } from "react"
 import { useInjection } from "inversify-react"
 import {
   TYPES,
@@ -90,7 +90,7 @@ const iconNames = Object.keys(LucideIcons)
     return !iconName.includes("Icon")
   })
 
-export const LayoutCreation = (props: any) => {
+export const LayoutCreation = forwardRef((props: any, forwardRef: any) => {
   const { children } = props
   const layoutRegistry = useInjection<LayoutRegistry>(TYPES.LayoutRegistry)
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
@@ -98,7 +98,6 @@ export const LayoutCreation = (props: any) => {
     LayoutPresetType | undefined
   >(undefined)
   const [selectedIndex, setSelectedIndex] = useState<string>("")
-  const listRef = useRef<any>()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -210,7 +209,6 @@ export const LayoutCreation = (props: any) => {
                               <SelectGroup>
                                 <SelectLabel>Available Icons</SelectLabel>
                                 <FixedSizeList
-                                  ref={listRef}
                                   width={"100%"}
                                   height={350}
                                   itemCount={iconNames.length}
@@ -253,4 +251,4 @@ export const LayoutCreation = (props: any) => {
       </PopoverContent>
     </Popover>
   )
-}
+})

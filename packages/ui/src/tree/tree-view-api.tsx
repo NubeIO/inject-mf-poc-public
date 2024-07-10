@@ -1,19 +1,18 @@
 "use client";
 
-import React, {
-  createContext,
-  forwardRef,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import React, { createContext, forwardRef, useCallback, useContext, useEffect, useState } from "react";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
 import { FileIcon, FolderIcon, FolderOpenIcon } from "lucide-react";
+
+
 
 import { cn } from "@nubeio/ui";
 import { Button } from "@nubeio/ui/button";
 import { ScrollArea } from "@nubeio/ui/scroll-area";
+
+
+
+
 
 type TreeViewElement = {
   id: string;
@@ -239,6 +238,7 @@ const Folder = forwardRef<
 
     return (
       <AccordionPrimitive.Item
+        ref={ref}
         {...props}
         value={value}
         className="relative h-full overflow-hidden"

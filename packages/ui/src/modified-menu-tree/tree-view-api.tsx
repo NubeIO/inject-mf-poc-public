@@ -243,8 +243,9 @@ const Folder = forwardRef<
     children,
     customIcon,
     ...props
-  }) =>
-    // ref
+  },
+  ref
+) =>
     {
       const {
         direction,
@@ -258,6 +259,7 @@ const Folder = forwardRef<
 
       return (
         <AccordionPrimitive.Item
+          ref={ref}
           {...props}
           value={value}
           className="relative h-full overflow-hidden"
