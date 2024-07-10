@@ -5,7 +5,7 @@ import {
   URI,
   LayoutRegistry,
   WidgetManager,
-  LayoutConfig,
+  StoreManager,
 } from "@nubeio/flex-core"
 import { Popover, PopoverContent, PopoverTrigger } from "@nubeio/ui/popover"
 import {
@@ -23,6 +23,7 @@ export const WidgetSelection = (props: any) => {
   const { children, extensionManifest, selectedPanel } = props
   const widgetManager = useInjection<WidgetManager>(TYPES.WidgetManager)
   const layoutRegistry = useInjection<LayoutRegistry>(TYPES.LayoutRegistry)
+  const storeManager = useInjection<StoreManager>(TYPES.StoreManager)
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
 
   const extraOptions = [
@@ -59,7 +60,11 @@ export const WidgetSelection = (props: any) => {
     }
 
     // update the layout content
-    const content = value.includes("wires") ? Extension : <Extension />
+    const content = value.includes("wires") ? (
+      Extension
+    ) : (
+      <Extension api={storeManager.getStore} />
+    )
     layoutRegistry.changeLayoutContent(selectedPanel, content, extensionUrl)
 
     // close the popover

@@ -157,10 +157,7 @@ export const ChildComponent: React.FC<ChildComponentProps> = () => {
                           setIsExpanded={setIsCustomMenuExpanded}
                         />
                       </div>
-                      <MenuTreeCustom
-                        menuItems={customMenuItems}
-                        isExpanded={isCustomMenuExpanded}
-                      />
+                      <MenuTreeCustom isExpanded={isCustomMenuExpanded} />
                     </div>
                   </ResizablePanel>
                 </ResizablePanelGroup>

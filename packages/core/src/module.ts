@@ -1,12 +1,20 @@
+
+
+
 import "reflect-metadata";
 
+
+
 import { ContainerModule } from "inversify";
+
+
 
 import { FrontEndApplication, TYPES } from "./common";
 import { CoreFrontendApplication } from "./core-application";
 import { ExtensionsLoader } from "./extensions-loader";
 import { LayoutRegistry } from "./layouts";
 import { MenuRegistry } from "./menu";
+import { StoreManager } from "./stores";
 import { OpenHandler, OpenService, WidgetManager } from "./widget";
 
 const coreContainer = new ContainerModule((bind) => {
@@ -14,6 +22,7 @@ const coreContainer = new ContainerModule((bind) => {
   bind(TYPES.WidgetManager).to(WidgetManager).inSingletonScope();
   bind(TYPES.LayoutRegistry).to(LayoutRegistry).inSingletonScope();
   bind(TYPES.ExtensionsLoader).to(ExtensionsLoader).inSingletonScope();
+  bind(TYPES.StoreManager).to(StoreManager).inSingletonScope();
 
   bind<FrontEndApplication>(TYPES.FrontEndApplication).to(
     CoreFrontendApplication,

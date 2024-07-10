@@ -7,6 +7,7 @@ import {
   TYPES,
   LayoutRegistry,
   AllLayouts,
+  StoreManager,
   LayoutContextMenuProps,
 } from "@nubeio/flex-core"
 import {
@@ -27,6 +28,7 @@ export const cardStyle = `h-[34px] w-[34px] hover:bg-gray-200 rounded-lg p-[7px]
 export const ExtensionMenu = memo((props: any) => {
   const { isMenuCollapsed, menuItems } = props
   const layoutRegistry = useInjection<LayoutRegistry>(TYPES.LayoutRegistry)
+  const storeManager = useInjection<StoreManager>(TYPES.StoreManager)
   const [allLayouts, setAllLayouts] = useState<AllLayouts>({})
 
   useEffect(() => {
@@ -52,7 +54,7 @@ export const ExtensionMenu = memo((props: any) => {
     extensionUrl = url
 
     // update the layout content
-    const content = <Extension />
+    const content = <Extension api={storeManager.getStore} />
     layoutRegistry.changeToSinglePanelWithContent(content, extensionUrl)
   }
 

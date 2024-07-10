@@ -6,7 +6,12 @@ import React, {
   useState,
 } from "react"
 import { useInjection } from "inversify-react"
-import { TYPES, LayoutRegistry, LayoutConfig } from "@nubeio/flex-core"
+import {
+  TYPES,
+  LayoutRegistry,
+  LayoutConfig,
+  StoreManager,
+} from "@nubeio/flex-core"
 
 import { Separator } from "@nubeio/ui/separator"
 import {
@@ -26,11 +31,12 @@ const iconStyle = "w-[32px] h-[32px] p-[5px] rounded-lg hover:bg-slate-200"
 
 export const MainDisplay = memo((props: any) => {
   const { extensionManifest, isManagingLayout } = props
+  const storeManager = useInjection<StoreManager>(TYPES.StoreManager)
   const layoutRegistry = useInjection<LayoutRegistry>(TYPES.LayoutRegistry)
   const [layout, setLayout] = useState<LayoutConfig | undefined>(undefined)
-  const [selectedPanel, setSelectedPanel] = useState<LayoutConfig | undefined>(
-    undefined
-  )
+
+  const { currentSelectedPanel, setCurrentSelectedPanel, setCustomMenuBar } =
+    storeManager.getStore()
 
   useEffect(() => {
     const selectedLayoutChangeCallback = () => {
@@ -38,18 +44,11 @@ export const MainDisplay = memo((props: any) => {
 
       setLayout(updatedSelectedLayout.layout)
     }
-    const selectedPanelChangeCallback = () => {
-      const selectedPanel = layoutRegistry.getCurrentSelectedPanel
-        ? { ...layoutRegistry.getCurrentSelectedPanel }
-        : undefined
-      setSelectedPanel(selectedPanel)
-    }
 
     // call once to get the initial layouts
     selectedLayoutChangeCallback()
 
     layoutRegistry.onSelectedLayoutChange(selectedLayoutChangeCallback)
-    layoutRegistry.onSelectedPanelChange(selectedPanelChangeCallback)
     return () => {
       layoutRegistry.removeOnSelectedLayoutChange(selectedLayoutChangeCallback)
     }
@@ -146,11 +145,14 @@ export const MainDisplay = memo((props: any) => {
                     renderLayout(child)
                   ) : (
                     <div
-                      className={`w-full h-full flex flex-col items-center justify-center relative ${selectedPanel?.id === child.id && "border border-amber-400"}`}
+                      className={`w-full h-full flex flex-col items-center justify-center relative ${currentSelectedPanel?.id === child.id && "border border-amber-400"}`}
                       onClick={(e: any) => {
                         e.stopPropagation()
-                        if (selectedPanel?.id !== child.id) {
-                          layoutRegistry.setCurrentSelectedPanel = child
+                        if (currentSelectedPanel?.id !== child.id) {
+                          setCurrentSelectedPanel(child)
+                          if (child.contentUrl === null) {
+                            setCustomMenuBar(undefined)
+                          }
                         }
                       }}
                     >

@@ -7,3 +7,4 @@ export * from "./menu";
 export * from "./widget";
 export * from "./layouts";
 export * from "./extensions-loader";
+export * from "./stores";

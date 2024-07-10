@@ -11,6 +11,7 @@ import { generateUuid } from "@nubeio/ui";
 import { TYPES } from "../common";
 import { LAYOUT_LOCAL_STORAGE_KEY, presetIdArr } from "../constants";
 import { ExtensionsLoader } from "../extensions-loader";
+import { StoreManager } from "../stores";
 import { fourPanel, onePanel, threePanel, twoPanel } from "./layout-presets";
 import { AllLayouts, ChangeListener, Layout, LayoutConfig, PanelPresetModes, PresetID } from "./layout-type";
 
@@ -21,14 +22,14 @@ export class LayoutRegistry {
   protected selectedLayout: Layout | undefined = undefined;
   private layoutChangeListeners = new Set<ChangeListener>();
   private layoutSelectedListeners = new Set<ChangeListener>();
-  private selectedPanelListeners = new Set<ChangeListener>();
   private extensionsLoader: ExtensionsLoader;
-
-  currentSelectedPanel: LayoutConfig | undefined = undefined;
+  private storeManager: StoreManager;
 
   constructor(
     @inject(TYPES.ExtensionsLoader) private _extensionsLoader: ExtensionsLoader,
+    @inject(TYPES.StoreManager) private _storeManger: StoreManager,
   ) {
+    this.storeManager = _storeManger;
     this.extensionsLoader = _extensionsLoader;
     const storedLayouts = localStorage.getItem(LAYOUT_LOCAL_STORAGE_KEY);
     if (storedLayouts) {
@@ -64,9 +65,6 @@ export class LayoutRegistry {
   get getSelectedLayout(): Layout | undefined {
     return this.selectedLayout;
   }
-  get getCurrentSelectedPanel(): LayoutConfig | undefined {
-    return this.currentSelectedPanel;
-  }
 
   set setAllLayouts(layouts: AllLayouts) {
     this.allLayouts = layouts;
@@ -78,18 +76,15 @@ export class LayoutRegistry {
     this.notifySelectedLayoutChangeListeners();
     this.allLayouts[layout.id] = layout;
     this.notifyLayoutChangeListeners();
-    this.currentSelectedPanel = undefined;
-    this.notifySelectedPanelChangeListeners();
-  }
-  set setCurrentSelectedPanel(panel: LayoutConfig | undefined) {
-    this.currentSelectedPanel = panel;
-    this.notifySelectedPanelChangeListeners();
+    this.storeManager.getStore.setState({
+      currentSelectedPanel: undefined,
+    });
   }
 
   async loadRemoteModuleByUrl(url: string): Promise<any> {
     const res: any = await loadRemote(url);
     const Extension = res.default;
-    return <Extension />;
+    return <Extension api={this.storeManager.getStore} />;
   }
 
   async traverseAndPopulate(
@@ -113,6 +108,7 @@ export class LayoutRegistry {
       return {
         ...singleLayout,
         content: null,
+        contentUrl: null,
       };
     } else {
       const children: LayoutConfig[] = await Promise.all(
@@ -222,19 +218,6 @@ export class LayoutRegistry {
     }
   }
 
-  // listens for changes in the selected panel
-  onSelectedPanelChange(listener: ChangeListener): void {
-    this.selectedPanelListeners.add(listener);
-  }
-  removeOnSelectedPanelChange(listener: ChangeListener): void {
-    this.selectedPanelListeners.delete(listener);
-  }
-  private notifySelectedPanelChangeListeners(): void {
-    for (const listener of this.selectedPanelListeners) {
-      listener();
-    }
-  }
-
   changeToSinglePanelWithContent = (
     content: React.ReactNode,
     extensionUrl: string | null,
@@ -256,6 +239,9 @@ export class LayoutRegistry {
     };
 
     this.selectedLayout = newLayout;
+    this.storeManager.getStore.setState({
+      currentSelectedPanel: newLayoutConfig,
+    });
 
     this.notifyLayoutChangeListeners();
     this.notifySelectedLayoutChangeListeners();
