@@ -89,7 +89,11 @@ export class LayoutRegistry {
   async loadRemoteModuleByUrl(url: string): Promise<any> {
     const res: any = await loadRemote(url);
     const Extension = res.default;
-    return <Extension api={this.storeManager.getStore} />;
+    const classes: {[index: string]: any} = {
+      extensionsLoader: this.extensionsLoader,
+      storeManager: this.storeManager,
+    }
+    return <Extension api={this.storeManager.getStore} coreClasses={classes} />;
   }
 
   async traverseAndPopulate(
