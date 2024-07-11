@@ -1,12 +1,6 @@
 import { useState } from "react"
 import { useInjection } from "inversify-react"
-import {
-  TYPES,
-  URI,
-  LayoutRegistry,
-  WidgetManager,
-  StoreManager,
-} from "@nubeio/flex-core"
+import { TYPES, LayoutRegistry } from "@nubeio/flex-core"
 import { Popover, PopoverContent, PopoverTrigger } from "@nubeio/ui/popover"
 import {
   Select,
@@ -17,13 +11,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@nubeio/ui/select"
-import { loadRemote } from "@module-federation/enhanced/runtime"
 
 export const WidgetSelection = (props: any) => {
   const { children, extensionManifest, selectedPanel } = props
-  const widgetManager = useInjection<WidgetManager>(TYPES.WidgetManager)
   const layoutRegistry = useInjection<LayoutRegistry>(TYPES.LayoutRegistry)
-  const storeManager = useInjection<StoreManager>(TYPES.StoreManager)
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
 
   const extraOptions = [
@@ -41,31 +32,8 @@ export const WidgetSelection = (props: any) => {
     },
   ]
 
-  const handleExtensionChange = async (value: string) => {
-    let Extension: any = null
-    let extensionUrl = null
-    if (value.includes("wires")) {
-      const uri = URI.parse(value)
-      const queryParams = new URLSearchParams(uri.query)
-      const id = queryParams.get("id")
-      const widget: any = await widgetManager.getOrCreateWidget("widget:flow", {
-        uri: uri,
-        id: id,
-      })
-      Extension = widget.render()
-    } else {
-      const res: any = await loadRemote(value)
-      Extension = res.default
-      extensionUrl = value
-    }
-
-    // update the layout content
-    const content = value.includes("wires") ? (
-      Extension
-    ) : (
-      <Extension api={storeManager.getStore} />
-    )
-    layoutRegistry.changeLayoutContent(selectedPanel, content, extensionUrl)
+  const handleExtensionChange = async (extensionUrl: string) => {
+    layoutRegistry.changeLayoutContent(selectedPanel, extensionUrl)
 
     // close the popover
     setIsPopoverOpen(false)

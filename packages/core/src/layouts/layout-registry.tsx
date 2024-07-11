@@ -8,10 +8,12 @@ import { generateUuid } from "@nubeio/ui";
 
 
 
+import { URI } from "../";
 import { TYPES } from "../common";
 import { LAYOUT_LOCAL_STORAGE_KEY, presetIdArr } from "../constants";
 import { ExtensionsLoader } from "../extensions-loader";
 import { StoreManager } from "../stores";
+import { WidgetManager } from "../widget";
 import { fourPanel, onePanel, threePanel, twoPanel } from "./layout-presets";
 import { AllLayouts, ChangeListener, Layout, LayoutConfig, PanelPresetModes, PresetID } from "./layout-type";
 
@@ -24,13 +26,16 @@ export class LayoutRegistry {
   private layoutSelectedListeners = new Set<ChangeListener>();
   private extensionsLoader: ExtensionsLoader;
   private storeManager: StoreManager;
+  private widgetManager: WidgetManager;
 
   constructor(
     @inject(TYPES.ExtensionsLoader) private _extensionsLoader: ExtensionsLoader,
     @inject(TYPES.StoreManager) private _storeManger: StoreManager,
+    @inject(TYPES.WidgetManager) private _widgetManager: WidgetManager,
   ) {
     this.storeManager = _storeManger;
     this.extensionsLoader = _extensionsLoader;
+    this.widgetManager = _widgetManager;
     const storedLayouts = localStorage.getItem(LAYOUT_LOCAL_STORAGE_KEY);
     if (storedLayouts) {
       // parsedLayouts contains the saved layouts, however, the content of each none empty layout needs to be repopulated
@@ -218,10 +223,10 @@ export class LayoutRegistry {
     }
   }
 
-  changeToSinglePanelWithContent = (
-    content: React.ReactNode,
-    extensionUrl: string | null,
-  ) => {
+  changeToSinglePanelWithContent = async (extensionUrl: string | null) => {
+    if (!extensionUrl) return;
+    const content = await this.loadRemoteModuleByUrl(extensionUrl);
+
     const newLayoutConfig: LayoutConfig = {
       id: generateUuid(),
       style: "horizontal",
@@ -247,19 +252,41 @@ export class LayoutRegistry {
     this.notifySelectedLayoutChangeListeners();
   };
 
-  changeLayoutContent = (
+  changeLayoutContent = async (
     selectedPanel: LayoutConfig,
-    content: React.ReactNode,
+    // content: React.ReactNode,
     extensionUrl: string | null,
   ) => {
+    if (!extensionUrl) return;
     if (!this.selectedLayout) return;
     // create a copy of the initial layout and modify it
     const copy: LayoutConfig = { ...this.selectedLayout.layout };
     // locate the selected panel in the layout and update its content
     const currentPanel = this.findPanelById(copy, selectedPanel.id);
     if (currentPanel === null) return;
-    currentPanel.content = content;
-    currentPanel.contentUrl = extensionUrl;
+
+    // TODO: load extension based on the url
+    let Extension: any = null;
+    let _extensionUrl = null;
+    if (extensionUrl.includes("wires")) {
+      const uri = URI.parse(extensionUrl);
+      const queryParams = new URLSearchParams(uri.query);
+      const id = queryParams.get("id");
+      const widget: any = await this.widgetManager.getOrCreateWidget(
+        "widget:flow",
+        {
+          uri: uri,
+          id: id,
+        },
+      );
+      Extension = widget.render();
+    } else {
+      Extension = await this.loadRemoteModuleByUrl(extensionUrl);
+      _extensionUrl = extensionUrl;
+    }
+
+    currentPanel.content = Extension;
+    currentPanel.contentUrl = _extensionUrl;
 
     this.selectedLayout.layout = copy;
 

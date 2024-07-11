@@ -45,17 +45,8 @@ export const ExtensionMenu = memo((props: any) => {
     }
   }, [layoutRegistry])
 
-  const handleShowSingleExtension = async (url: string) => {
-    let Extension: any = null
-    let extensionUrl = null
-
-    const res: any = await loadRemote(url)
-    Extension = res.default
-    extensionUrl = url
-
-    // update the layout content
-    const content = <Extension api={storeManager.getStore} />
-    layoutRegistry.changeToSinglePanelWithContent(content, extensionUrl)
+  const handleShowSingleExtension = async (extensionUrl: string) => {
+    layoutRegistry.changeToSinglePanelWithContent(extensionUrl)
   }
 
   return (
