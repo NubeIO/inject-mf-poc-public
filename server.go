@@ -26,6 +26,11 @@ type JSONRequest struct {
 	AppURL      string `json:"app_url"`
 }
 
+type TranslationRequest struct {
+	Name        string `json:"name"`
+	Data				map[string]map[string]string `json:"data"`
+}
+
 type Config struct {
 	Version    int            `json:"version"`
 	Extensions map[string]App `json:"extensions"`
@@ -75,6 +80,7 @@ func main() {
 
 	// Serve static files
 	r.Use(static.Serve("/", static.LocalFile("./static", false)))
+	r.Use(static.Serve("/translations", static.LocalFile("./translations", false)))
 
 	r.GET("/manifest", func(c *gin.Context) {
 		manifest := []App{}
@@ -128,26 +134,106 @@ func main() {
 		c.JSON(http.StatusOK, gin.H{"installed_apps": installedApps})
 	})
 
-	// // Define GET endpoint to fetch a static file
-	// r.GET("current_layout", func(c *gin.Context) {
-	// 	file := filepath.Join("./dist", "config.json")
+	// get the languages listed in the translations/flex folder
+	r.GET("/languages", func(c *gin.Context) {
+		languages := []string{}
+		// Read the translations folder and list out the subfolders
+		translationsFolder := filepath.Join("./static/translations", "flex")
+		files, err := ioutil.ReadDir(translationsFolder)
+		if err != nil {
+			fmt.Println("Error reading flex folder:", err)
+			return
+		}
 
-	// 	// Check if file exists
-	// 	_, err := os.Stat(file)
-	// 	if os.IsNotExist(err) {
-	// 		c.JSON(http.StatusNotFound, gin.H{"error": "File not found"})
-	// 		return
-	// 	}
+		// Get the names of the subfolders in the translations folder
+		for _, file := range files {
+			if file.IsDir() {
+				languages = append(languages, file.Name())
+			}
+		}
 
-	// 	// Read file content
-	// 	content, err := ioutil.ReadFile(file)
-	// 	if err != nil {
-	// 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to read file"})
-	// 		return
-	// 	}
+		c.JSON(http.StatusOK, gin.H{"languages": languages})
+	})
 
-	// 	c.Data(http.StatusOK, "application/octet-stream", content)
-	// })
+	// get the languages listed in the translations/flex folder
+	r.GET("/extension-namespaces", func(c *gin.Context) {
+		namespaces := []string{}
+		// Read the translations folder and list out the subfolders
+		translationsFolder := filepath.Join("./static", "translations")
+		files, err := ioutil.ReadDir(translationsFolder)
+		if err != nil {
+			fmt.Println("Error reading translations folder:", err)
+			return
+		}
+
+		// Get the names of the subfolders in the translations folder
+		for _, file := range files {
+			if file.IsDir() {
+				namespaces = append(namespaces, file.Name())
+			}
+		}
+
+		c.JSON(http.StatusOK, gin.H{"extensionNamespaces": namespaces})
+	})
+
+	// post new translations to the translations folder
+	r.POST("/new-translations", func(c *gin.Context) {
+		// Bind JSON request body to JSONRequest struct
+		var jsonReq TranslationRequest
+		if err := c.BindJSON(&jsonReq); err != nil {
+			log.Println("Unable to parse JSON")
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Unable to parse JSON"})
+			return
+		}
+
+		// json request contains two fields: extension name and data. Extension name will be the name of the folder
+		// the first layer of data object contains all the language codes where the second layer contains the translations
+		// Create the folder using the extension's name
+		dirPath := filepath.Join("./static/translations", jsonReq.Name)
+		
+		// Use os.Mkdir to create a single directory
+		err := os.Mkdir(dirPath, 0755)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		// read the first layer of data object and create a folder for each language code
+		// create a new json file named dictionary.json for each language code and write the translations to the file
+		for langCode, translationData := range jsonReq.Data {
+			dirPath := filepath.Join("./static/translations", jsonReq.Name, langCode)
+			err := os.Mkdir(dirPath, 0755)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+
+			// create the dictionary.json file
+			filePath := filepath.Join(dirPath, "dictionary.json")
+			// Marshal the struct to JSON
+			jsonTranslationData, err := json.MarshalIndent(translationData, "", "  ")
+			if err != nil {
+					fmt.Println(err)
+					return
+			}
+	
+			// Create the JSON file
+			file, err := os.Create(filePath)
+			if err != nil {
+					fmt.Println(err)
+					return
+			}
+			defer file.Close()
+	
+			// Write the JSON data to the file
+			_, err = file.Write(jsonTranslationData)
+			if err != nil {
+					fmt.Println(err)
+					return
+			}
+		}
+
+		c.JSON(http.StatusOK, gin.H{"creation": "successful"})
+	})
 
 	// Define PUT endpoint to modify a static file
 	r.PUT("/static/:filename", func(c *gin.Context) {

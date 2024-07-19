@@ -12,6 +12,9 @@ export default defineConfig({
       appendPlugins([
         new ModuleFederationPlugin({
           name: "flex",
+          // exposes: {
+          //   "./i18n": "./src/i18n.ts",
+          // },
           remotes: {
             flex_ui: "flex_ui@http://localhost:3000/mf-manifest.json",
             flex_business:

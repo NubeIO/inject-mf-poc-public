@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { useInjection } from "inversify-react";
-import { LayoutMenu } from "./Menu";
+import React, { useState, useEffect, Suspense } from "react"
+import { useInjection, useContainer } from "inversify-react"
+import { interfaces } from "inversify"
+import { LayoutMenu } from "./Menu"
 import { WelcomeLayout } from "./WelcomeLayout"
 import {
   WidgetManager,
   ExtensionsLoader,
   TYPES,
   Widget,
-  Manifest,
+  LanguageRegistry,
+  ILanguageRegistry,
 } from "@nubeio/flex-core"
 
 import {
@@ -22,6 +24,7 @@ import { MenuTreeUniversal } from "./layout/menu-trees/MenuTreeUniversal"
 import { MenuTreeCustom } from "./layout/menu-trees/MenuTreeCustom"
 import { ExtensionMenu } from "./layout/ExtensionMenu"
 import { MainDisplay } from "./layout/MainDisplay"
+import { useTranslation } from "react-i18next"
 
 interface ChildComponentProps {}
 
@@ -31,13 +34,16 @@ const maxSize = 35
 export const ChildComponent: React.FC<ChildComponentProps> = () => {
   const widgetManager = useInjection<WidgetManager>(TYPES.WidgetManager)
   const extensionLoader = useInjection<ExtensionsLoader>(TYPES.ExtensionsLoader)
+  const languageRegistry = useInjection<LanguageRegistry>(
+    TYPES.LanguageRegistry
+  )
+
   const [widgets, setWidgets] = useState<Map<string, Widget>>(new Map())
   const [selectedWidget, setSelectedWidget] = useState<string | undefined>()
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [isSupervisorMenuExpanded, setIsSupervisorMenuExpanded] =
     useState(false)
   const [isCustomMenuExpanded, setIsCustomMenuExpanded] = useState(false)
-  const [extensionManifest, setExtensionManifest] = useState<Manifest[]>([])
   const [customMenuName, setCustomMenuName] = useState<string>(
     "Application Specific Menu"
   )
@@ -45,12 +51,7 @@ export const ChildComponent: React.FC<ChildComponentProps> = () => {
   const [nodeTree, setNodeTree] = useState<TreeViewElement[]>([])
   const [isManagingLayout, setIsManagingLayout] = useState(false)
 
-  useEffect(() => {
-    const manifestChangeCallback = async () => {
-      setExtensionManifest(extensionLoader.getManifest)
-    }
-    extensionLoader.onManifestChange(manifestChangeCallback)
-  }, [])
+  const extensionManifest = extensionLoader.getManifest
 
   useEffect(() => {
     setCustomMenuName("Test")

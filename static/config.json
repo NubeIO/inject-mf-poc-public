@@ -6,6 +6,12 @@
       "entry": "http://localhost:4000/extensions/extension_manager/remoteEntry.js",
       "icon": "Blocks",
       "url": "extension_manager/extension_manager"
+    },
+    "i18n_manager": {
+      "name": "i18n_manager",
+      "entry": "http://localhost:4000/extensions/i18n_manager/remoteEntry.js",
+      "icon": "Languages",
+      "url": "i18n_manager/i18n_manager"
     }
   }
 }

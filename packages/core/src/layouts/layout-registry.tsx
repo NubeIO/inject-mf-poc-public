@@ -12,11 +12,18 @@ import { URI } from "../";
 import { TYPES } from "../common";
 import { LAYOUT_LOCAL_STORAGE_KEY, presetIdArr } from "../constants";
 import { ExtensionsLoader } from "../extensions-loader";
+import { I18nService, II18nService, LanguageRegistry } from "../i18n";
 import { StoreManager } from "../stores";
 import { WidgetManager } from "../widget";
 import { fourPanel, onePanel, threePanel, twoPanel } from "./layout-presets";
-import { AllLayouts, ChangeListener, Layout, LayoutConfig, PanelPresetModes, PresetID } from "./layout-type";
-
+import {
+  AllLayouts,
+  ChangeListener,
+  Layout,
+  LayoutConfig,
+  PanelPresetModes,
+  PresetID,
+} from "./layout-type";
 
 @injectable()
 export class LayoutRegistry {
@@ -27,15 +34,22 @@ export class LayoutRegistry {
   private extensionsLoader: ExtensionsLoader;
   private storeManager: StoreManager;
   private widgetManager: WidgetManager;
+  private i18nService: I18nService;
+  private languageRegistry: LanguageRegistry;
 
   constructor(
     @inject(TYPES.ExtensionsLoader) private _extensionsLoader: ExtensionsLoader,
     @inject(TYPES.StoreManager) private _storeManger: StoreManager,
     @inject(TYPES.WidgetManager) private _widgetManager: WidgetManager,
+    @inject(TYPES.I18nService) private _i18nService: I18nService,
+    @inject(TYPES.LanguageRegistry) private _languageRegistry: LanguageRegistry,
   ) {
+    // console.log("_languageRegistry is: ", _languageRegistry);
     this.storeManager = _storeManger;
     this.extensionsLoader = _extensionsLoader;
     this.widgetManager = _widgetManager;
+    this.i18nService = _i18nService;
+    this.languageRegistry = _languageRegistry;
     const storedLayouts = localStorage.getItem(LAYOUT_LOCAL_STORAGE_KEY);
     if (storedLayouts) {
       // parsedLayouts contains the saved layouts, however, the content of each none empty layout needs to be repopulated
@@ -89,10 +103,13 @@ export class LayoutRegistry {
   async loadRemoteModuleByUrl(url: string): Promise<any> {
     const res: any = await loadRemote(url);
     const Extension = res.default;
-    const classes: {[index: string]: any} = {
+    const classes: { [index: string]: any } = {
       extensionsLoader: this.extensionsLoader,
       storeManager: this.storeManager,
-    }
+      i18nService: this.i18nService,
+      languageRegistry: this.languageRegistry,
+    };
+    console.log("classes before injection: ", classes);
     return <Extension api={this.storeManager.getStore} coreClasses={classes} />;
   }
 

@@ -3,6 +3,8 @@ import { ReactNode } from "react";
 
 
 import { ExtensionsLoader } from "../extensions-loader";
+import { LanguageRegistry } from "../i18n/i18n-registry";
+import { I18nService } from "../i18n/i18n-service";
 import { LayoutRegistry } from "../layouts";
 import { StoreManager } from "../stores";
 
@@ -22,4 +24,6 @@ export const TYPES = {
   LayoutRegistry: Symbol.for("LayoutRegistry"),
   ExtensionsLoader: Symbol.for("ExtensionsLoader"),
   StoreManager: Symbol.for("StoreManager"),
+  LanguageRegistry: Symbol.for("LanguageRegistry"),
+  I18nService: Symbol.for("I18nService"),
 };

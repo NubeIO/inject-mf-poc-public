@@ -12,11 +12,19 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@nubeio/ui/dropdown-menu";
-// import { useTheme } from "@/components/theme/themeProvider";
+import { useTranslation } from "react-i18next"
+import { useInjection, useContainer } from "inversify-react"
+import { interfaces } from "inversify"
+import { TYPES, LanguageRegistry, ILanguageRegistry } from "@nubeio/flex-core"
 
 export function SettingsMenu(props: any) {
-  const { children } = props;
-  // const { theme, setTheme } = useTheme();
+  const { children } = props
+  const languageRegistry = useInjection<LanguageRegistry>(
+    TYPES.LanguageRegistry
+  )
+  const { t, i18n } = useTranslation("flex")
+
+  const options = languageRegistry?.getLanguageOptions() || []
 
   return (
     <DropdownMenu>
@@ -26,13 +34,36 @@ export function SettingsMenu(props: any) {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuSub>
-            <DropdownMenuSubTrigger>Theme</DropdownMenuSubTrigger>
+            <DropdownMenuSubTrigger>{t("theme")}</DropdownMenuSubTrigger>
             <DropdownMenuPortal>
               <DropdownMenuSubContent>
-                <DropdownMenuItem onClick={() => {}}>Light</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => {}}>Dark</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => {}}>
+                  {t("light")}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => {}}>
+                  {t("dark")}
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => {}}>System</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => {}}>
+                  {t("system")}
+                </DropdownMenuItem>
+              </DropdownMenuSubContent>
+            </DropdownMenuPortal>
+          </DropdownMenuSub>
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger>{t("language")}</DropdownMenuSubTrigger>
+            <DropdownMenuPortal>
+              <DropdownMenuSubContent>
+                {options.map((option: any) => {
+                  return (
+                    <DropdownMenuItem
+                      key={option.value}
+                      onClick={() => i18n.changeLanguage(option.value)}
+                    >
+                      {option.label}
+                    </DropdownMenuItem>
+                  )
+                })}
               </DropdownMenuSubContent>
             </DropdownMenuPortal>
           </DropdownMenuSub>
@@ -67,5 +98,5 @@ export function SettingsMenu(props: any) {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  );
+  )
 }

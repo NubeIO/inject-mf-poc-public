@@ -1,20 +1,25 @@
 import SettingContribution from "./components/setting/setting-contribution";
 import SettingComponent from "./components/setting/setting-component";
-import { ContainerModule, OpenHandler, TYPES } from "@nubeio/flex-core";
+import {
+  ContainerModule,
+  AsyncContainerModule,
+  OpenHandler,
+  TYPES,
+} from "@nubeio/flex-core"
 
 const appContainer = new ContainerModule((bind) => {
   bind<OpenHandler>(TYPES.OpenHandler)
     .to(SettingContribution)
-    .whenTargetNamed("setting");
-  bind<SettingContribution>(SettingContribution).toSelf().inSingletonScope();
+    .whenTargetNamed("setting")
+  bind<SettingContribution>(SettingContribution).toSelf().inSingletonScope()
 
-  bind(SettingComponent).toSelf();
+  bind(SettingComponent).toSelf()
   bind(TYPES.WidgetFactory)
     .toDynamicValue((ctx) => ({
       id: SettingComponent.ID,
       createWidget: () => ctx.container.get<SettingComponent>(SettingComponent),
     }))
-    .inSingletonScope();
-});
+    .inSingletonScope()
+})
 
 export default appContainer;

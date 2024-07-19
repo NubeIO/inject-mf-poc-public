@@ -1,16 +1,19 @@
 import React, {
   MouseEventHandler,
+  Suspense,
   memo,
   useEffect,
   useRef,
   useState,
 } from "react"
-import { useInjection } from "inversify-react"
+import { useInjection, useContainer } from "inversify-react"
 import {
   TYPES,
   LayoutRegistry,
   LayoutConfig,
   StoreManager,
+  LanguageRegistry,
+  ILanguageRegistry,
 } from "@nubeio/flex-core"
 
 import { Separator } from "@nubeio/ui/separator"
@@ -25,6 +28,7 @@ import {
   SquareSplitHorizontal,
   SquareSplitVertical,
 } from "lucide-react"
+import { useTranslation } from "react-i18next"
 import { WidgetSelection } from "./ExtensionSeletor"
 
 const iconStyle = "w-[32px] h-[32px] p-[5px] rounded-lg hover:bg-slate-200"
@@ -33,7 +37,9 @@ export const MainDisplay = memo((props: any) => {
   const { extensionManifest, isManagingLayout } = props
   const storeManager = useInjection<StoreManager>(TYPES.StoreManager)
   const layoutRegistry = useInjection<LayoutRegistry>(TYPES.LayoutRegistry)
+
   const [layout, setLayout] = useState<LayoutConfig | undefined>(undefined)
+  const { t, i18n } = useTranslation("flex")
 
   const { currentSelectedPanel, setCurrentSelectedPanel, setCustomMenuBar } =
     storeManager.getStore()
@@ -61,7 +67,7 @@ export const MainDisplay = memo((props: any) => {
           key={`${child.id}-action-group`}
           className={`w-full h-full flex flex-col items-center justify-center ${floating && "bg-white/80 absolute z-[1]"}`}
         >
-          <span className="font-semibold">{child.id}</span>
+          {/* <span className="font-semibold">{child.id}</span> */}
           <WidgetSelection
             extensionManifest={extensionManifest}
             selectedPanel={child}
@@ -181,14 +187,19 @@ export const MainDisplay = memo((props: any) => {
   }
 
   return (
+    // <Suspense fallback={"loading..."}>
     <div id="main-display-area" className="flex w-full h-full">
       {layout ? (
         renderLayout(layout)
       ) : (
         <div className="w-full h-full flex flex-col items-center justify-center">
-          <h1 className="text-[40px]">💪 Welcome to Flex 💪</h1>
+          <h1 className="text-[40px]">
+            {"💪" + t("Welcome to Flex") + "💪"}
+            {/* {"💪" + "Welcome to Flex" + "💪"} */}
+          </h1>
         </div>
       )}
     </div>
+    // </Suspense>
   )
 })
