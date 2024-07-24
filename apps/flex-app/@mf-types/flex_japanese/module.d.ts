@@ -1,2 +1,2 @@
-export * from "./compiled-types/src/module";
-export { default } from "./compiled-types/src/module";
+export * from './compiled-types/src/module';
+export { default } from './compiled-types/src/module';

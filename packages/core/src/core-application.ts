@@ -1,10 +1,15 @@
-import { inject, injectable } from "inversify";
+import { inject, injectable, named } from "inversify";
 
 import enTranslations from "../assets/locales/en.json";
 import zhTranslations from "../assets/locales/zh.json";
 import { FrontEndApplication } from "./common";
 import { TYPES } from "./common/types";
-import { LanguageRegistry, LocalizationService } from "./i18n";
+import {
+  DEFAULT_NAMESPACE,
+  LanguageRegistry,
+  LocalizationService,
+} from "./i18n";
+import { LanguageNSRegistry } from "./i18n/language-namespace-service";
 import { MAIN_MENU_BAR, MenuRegistry } from "./menu";
 
 const FILE = [...MAIN_MENU_BAR, "1_file_menu"];
@@ -19,51 +24,50 @@ const HELP_ABOUT = [...HELP, "1_about"];
 export class CoreFrontendApplication implements FrontEndApplication {
   constructor(
     @inject(TYPES.MenuRegistry) protected readonly menuRegistry: MenuRegistry,
-    @inject(TYPES.LanguageRegistry)
-    protected readonly languageRegistry: LanguageRegistry,
-    @inject(TYPES.LocalizationService)
-    protected readonly nls: LocalizationService,
+    @inject(TYPES.LanguageNSRegistry)
+    @named(DEFAULT_NAMESPACE)
+    protected readonly nls: LanguageNSRegistry,
   ) {}
 
   public initialize() {
-    this.languageRegistry.registerLanguage("en", "core", enTranslations);
-    this.languageRegistry.registerLanguage("zh", "core", zhTranslations);
+    this.nls.registerLanguage("en", enTranslations);
+    this.nls.registerLanguage("zh", zhTranslations);
 
     this.menuRegistry.registerMenuAction(FILE, {
-      label: this.nls.localize("menu.file", "core", "File"),
+      label: this.nls.localize("menu.file", "File"),
     });
 
     this.menuRegistry.registerMenuAction(FILE_NEW, {
-      label: this.nls.localize("menu.new_file", "core", "New File"),
+      label: this.nls.localize("menu.new_file", "New File"),
       execute(...args) {
         console.log("File");
       },
     });
 
     this.menuRegistry.registerMenuAction(HELP, {
-      label: this.nls.localize("menu.help", "core", "Help"),
+      label: this.nls.localize("menu.help", "Help"),
     });
 
     this.menuRegistry.registerMenuAction(HELP_ABOUT, {
-      label: this.nls.localize("menu.about", "core", "About"),
+      label: this.nls.localize("menu.about", "About"),
       execute(...args) {
         console.log("About");
       },
     });
 
     this.menuRegistry.registerMenuAction(LANGUAGE, {
-      label: this.nls.localize("menu.language", "core", "Language"),
+      label: this.nls.localize("menu.language", "Language"),
     });
 
     this.menuRegistry.registerMenuAction(LANGUAGE_EN, {
-      label: this.nls.localize("menu.language.en", "core", "English"),
+      label: this.nls.localize("menu.language.en", "English"),
       execute: (...args) => {
         this.nls.changeLanguage("en");
       },
     });
 
     this.menuRegistry.registerMenuAction(LANGUAGE_ZH, {
-      label: this.nls.localize("menu.language.zh", "core", "语言"),
+      label: this.nls.localize("menu.language.zh", "语言"),
       execute: (...args) => {
         this.nls.changeLanguage("zh");
       },

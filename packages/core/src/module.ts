@@ -5,7 +5,12 @@ import { ContainerModule } from "inversify";
 import { BearStore } from "./bears";
 import { FrontEndApplication, TYPES } from "./common";
 import { CoreFrontendApplication } from "./core-application";
-import { LanguageRegistry, LocalizationService } from "./i18n";
+import {
+  DEFAULT_NAMESPACE,
+  LanguageRegistry,
+  LocalizationService,
+} from "./i18n";
+import { LanguageNSRegistry } from "./i18n/language-namespace-service";
 import { MenuRegistry } from "./menu";
 import { OpenHandler, OpenService, WidgetManager } from "./widget";
 
@@ -23,6 +28,8 @@ const coreContainer = new ContainerModule((bind) => {
   bind<CoreFrontendApplication>(CoreFrontendApplication)
     .toSelf()
     .inSingletonScope();
+
+  LanguageNSRegistry.createBinding(bind, DEFAULT_NAMESPACE);
 
   bind(TYPES.OpenService)
     .toDynamicValue((context) => {

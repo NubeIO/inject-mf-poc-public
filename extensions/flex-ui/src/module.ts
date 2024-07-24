@@ -1,5 +1,6 @@
 import {
   ContainerModule,
+  LanguageNSRegistry,
   FrontEndApplication,
   OpenHandler,
   TYPES,
@@ -23,4 +24,6 @@ export default new ContainerModule((bind) => {
       createWidget: () => ctx.container.get<FlowComponent>(FlowComponent),
     }))
     .inSingletonScope();
+
+  LanguageNSRegistry.createBinding(bind, "flex-ui");
 });

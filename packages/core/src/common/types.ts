@@ -16,4 +16,5 @@ export const TYPES = {
   BearStore: Symbol.for("BearStore"),
   LanguageRegistry: Symbol.for("LanguageRegistry"),
   LocalizationService: Symbol.for("LocalizationService"),
+  LanguageNSRegistry: Symbol.for("LanguageNSRegistry"),
 };

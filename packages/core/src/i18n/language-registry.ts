@@ -5,9 +5,11 @@ import { create } from "zustand";
 import { Store } from "../common";
 import { LanguageLabel } from "./types";
 
+export const DEFAULT_NAMESPACE = "core";
+
 export type Localization = {
   languageId: string;
-  namespace: string;
+  namespace?: string;
   translations: { [key: string]: any };
 };
 
@@ -21,7 +23,7 @@ export function useTranslation() {
       const { t } = reactTranslation(label.namespace);
       return t(label.id, label.fallback ?? fallback ?? label.id);
     }
-    const { t } = reactTranslation(namespace ?? "core");
+    const { t } = reactTranslation(namespace ?? DEFAULT_NAMESPACE);
     return label ? t(label) : fallback ?? "";
   }
 
@@ -34,8 +36,8 @@ export type LanguageStore = {
   setCurrentLanguage: (languageId: string) => void;
   registerLanguage: (
     languageId: string,
-    namespace: string,
     translations: { [key: string]: any },
+    namespace?: string,
   ) => Localization;
 };
 
@@ -49,11 +51,13 @@ export class LanguageRegistry implements LanguageStore, Store<LanguageStore> {
     },
     registerLanguage: (
       languageId: string,
-      namespace: string,
       translations: { [key: string]: any },
+      namespace?: string,
     ) => {
       const state = get();
       const language = state.availableLanguages[languageId] || {};
+      console.log("name", namespace, languageId);
+      namespace = namespace ?? DEFAULT_NAMESPACE;
 
       if (language[namespace]) {
         throw new Error(
@@ -98,9 +102,9 @@ export class LanguageRegistry implements LanguageStore, Store<LanguageStore> {
 
   registerLanguage = (
     languageId: string,
-    namespace: string,
     translations: { [key: string]: any },
-  ) => this.getState().registerLanguage(languageId, namespace, translations);
+    namespace?: string,
+  ) => this.getState().registerLanguage(languageId, translations, namespace);
 
   useStore(): LanguageStore {
     return this.store();

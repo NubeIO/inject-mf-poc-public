@@ -6,8 +6,8 @@ import {
   TYPES,
   FrontEndApplication,
   URI,
-  LanguageRegistry,
-  LocalizationService,
+  LanguageNSRegistry,
+  named,
 } from "@nubeio/flex-core";
 
 import enTranslations from "../assets/locales/en.json";
@@ -28,42 +28,41 @@ export default class FlexUIApplication implements FrontEndApplication {
     @inject(TYPES.MenuRegistry) protected readonly menuRegistry: MenuRegistry,
     @inject(TYPES.OpenHandler)
     protected readonly openHandler: flexCore.OpenHandler,
-    @inject(TYPES.LanguageRegistry)
-    protected readonly languageRegistry: LanguageRegistry,
-    @inject(TYPES.LocalizationService)
-    protected readonly nls: LocalizationService,
+    @inject(TYPES.LanguageNSRegistry)
+    @named("flex-ui")
+    protected readonly nls: LanguageNSRegistry,
   ) {}
   initialize(): void {
-    this.languageRegistry.registerLanguage("en", "flex-ui", enTranslations);
-    this.languageRegistry.registerLanguage("zh", "flex-ui", zhTranslations);
+    this.nls.registerLanguage("en", enTranslations);
+    this.nls.registerLanguage("zh", zhTranslations);
 
     this.menuRegistry.registerMenuAction(EDIT, {
-      label: this.nls.localize("menu.edit", "flex-ui", "Edit"),
+      label: this.nls.localize("menu.edit", "Edit"),
     });
 
     this.menuRegistry.registerMenuAction(EDIT_UNDO, {
-      label: this.nls.localize("menu.undo", "flex-ui", "Undo"),
+      label: this.nls.localize("menu.undo", "Undo"),
       execute: (...args) => {
         this.openHandler.open(URI.parse("wires://nube.wires/?id=undo"));
       },
     });
     this.menuRegistry.registerMenuAction(EDIT_REDO, {
-      label: this.nls.localize("menu.redo", "flex-ui", "Redo"),
+      label: this.nls.localize("menu.redo", "Redo"),
       execute: (...args) => {
         this.openHandler.open(URI.parse("wires://nube.wires/?id=redo"));
       },
     });
     this.menuRegistry.registerMenuAction(VIEW, {
-      label: this.nls.localize("menu.view", "flex-ui", "View"),
+      label: this.nls.localize("menu.view", "View"),
     });
     this.menuRegistry.registerMenuAction(VIEW_ZOOM_IN, {
-      label: this.nls.localize("menu.zoom_in", "flex-ui", "Zoom In"),
+      label: this.nls.localize("menu.zoom_in", "Zoom In"),
       execute(...args) {
         console.log("Zoom In");
       },
     });
     this.menuRegistry.registerMenuAction(VIEW_ZOOM_OUT, {
-      label: this.nls.localize("menu.zoom_out", "flex-ui", "Zoom Out"),
+      label: this.nls.localize("menu.zoom_out", "Zoom Out"),
       execute(...args) {
         console.log("Zoom Out");
       },
