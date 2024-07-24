@@ -4,21 +4,14 @@ import enTranslations from "../assets/locales/en.json";
 import zhTranslations from "../assets/locales/zh.json";
 import { FrontEndApplication } from "./common";
 import { TYPES } from "./common/types";
-import {
-  DEFAULT_NAMESPACE,
-  LanguageRegistry,
-  LocalizationService,
-} from "./i18n";
+import { DEFAULT_NAMESPACE } from "./i18n";
 import { LanguageNSRegistry } from "./i18n/language-namespace-service";
-import { MAIN_MENU_BAR, MenuRegistry } from "./menu";
+import { FILE_MENU, HELP_MENU, LANGUAGE_MENU, MenuRegistry } from "./menu";
 
-const FILE = [...MAIN_MENU_BAR, "1_file_menu"];
-const FILE_NEW = [...FILE, "1_file_new"];
-const HELP = [...MAIN_MENU_BAR, "99_help_menu"];
-const LANGUAGE = [...MAIN_MENU_BAR, "8_language"];
-const LANGUAGE_EN = [...LANGUAGE, "1_language_en"];
-const LANGUAGE_ZH = [...LANGUAGE, "2_language_zh"];
-const HELP_ABOUT = [...HELP, "1_about"];
+const FILE_NEW = [...FILE_MENU, "1_file_new"];
+const LANGUAGE_EN = [...LANGUAGE_MENU, "1_language_en"];
+const LANGUAGE_ZH = [...LANGUAGE_MENU, "2_language_zh"];
+const HELP_ABOUT = [...HELP_MENU, "1_about"];
 
 @injectable()
 export class CoreFrontendApplication implements FrontEndApplication {
@@ -33,7 +26,7 @@ export class CoreFrontendApplication implements FrontEndApplication {
     this.nls.registerLanguage("en", enTranslations);
     this.nls.registerLanguage("zh", zhTranslations);
 
-    this.menuRegistry.registerMenuAction(FILE, {
+    this.menuRegistry.registerMenuAction(FILE_MENU, {
       label: this.nls.localize("menu.file", "File"),
     });
 
@@ -44,7 +37,7 @@ export class CoreFrontendApplication implements FrontEndApplication {
       },
     });
 
-    this.menuRegistry.registerMenuAction(HELP, {
+    this.menuRegistry.registerMenuAction(HELP_MENU, {
       label: this.nls.localize("menu.help", "Help"),
     });
 
@@ -55,7 +48,7 @@ export class CoreFrontendApplication implements FrontEndApplication {
       },
     });
 
-    this.menuRegistry.registerMenuAction(LANGUAGE, {
+    this.menuRegistry.registerMenuAction(LANGUAGE_MENU, {
       label: this.nls.localize("menu.language", "Language"),
     });
 

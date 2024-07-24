@@ -1,8 +1,7 @@
-import { inject, injectable, postConstruct } from "inversify";
+import { inject, injectable } from "inversify";
 import { URI } from "vscode-uri";
 
 import { MaybePromise, TYPES, Widget } from "../common";
-import NotFoundComponent from "./not-found";
 import { WidgetManager } from "./widget-factory";
 
 export interface OpenerOptions {}

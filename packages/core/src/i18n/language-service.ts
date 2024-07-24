@@ -39,6 +39,7 @@ export class LocalizationService {
   ) => {
     if (!deepEqual(state.availableLanguages, prevState.availableLanguages)) {
       this.updateResources(state.availableLanguages);
+      console.log("Available Languages", state.availableLanguages)
     }
   };
 
@@ -61,8 +62,11 @@ export class LocalizationService {
     this.languageRegistry.setCurrentLanguage(languageId);
   }
 
-  localize(key: string, namespace: string, fallback?: string): LanguageLabel {
-    return { id: key, namespace, fallback };
+  localize(
+    key: string,
+    option: { namespace?: string; fallback?: string },
+  ): LanguageLabel {
+    return { id: key, namespace: option.namespace, fallback: option.fallback };
   }
 }
 

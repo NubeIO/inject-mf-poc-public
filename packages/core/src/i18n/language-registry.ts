@@ -63,7 +63,7 @@ export class LanguageRegistry implements LanguageStore, Store<LanguageStore> {
     ) => {
       const state = get();
       const language = state.availableLanguages[languageId] || {};
-      console.log("name", namespace, languageId);
+
       namespace = namespace ?? DEFAULT_NAMESPACE;
 
       if (language[namespace]) {

@@ -1,6 +1,10 @@
-import { MenuRegistry, FrontEndApplication } from "@nubeio/flex-core";
+import {
+  MenuRegistry,
+  FrontEndApplication,
+  LanguageNSRegistry,
+} from "@nubeio/flex-core";
 import * as flexCore from "@nubeio/flex-core";
-import { LanguageNSRegistry } from "@nubeio/flex-core/i18n/language-namespace-service";
+export declare const LANGUAGE_NAMESPACE = "flex-ui";
 export default class FlexUIApplication implements FrontEndApplication {
   protected readonly menuRegistry: MenuRegistry;
   protected readonly openHandler: flexCore.OpenHandler;
