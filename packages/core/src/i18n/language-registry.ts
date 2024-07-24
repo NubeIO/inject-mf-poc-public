@@ -13,23 +13,30 @@ export type Localization = {
   translations: { [key: string]: any };
 };
 
-export function useTranslation() {
+export function useTranslation(ns?: string) {
   function localize(
     label: string | LanguageLabel | undefined,
-    namespace?: string,
-    fallback?: string,
+    options?: { fallback?: string; namespace?: string },
   ): string {
+    const fallbackNS = LanguageLabel.is(label)
+      ? label.namespace
+      : DEFAULT_NAMESPACE;
+    const namespace = ns ?? options?.namespace ?? fallbackNS;
+
+    const fallbackLabel = LanguageLabel.is(label) ? label.fallback : undefined;
+    const fallback = options?.fallback ?? fallbackLabel ?? "";
+
+    const { t } = reactTranslation(namespace);
+
     if (LanguageLabel.is(label)) {
-      const { t } = reactTranslation(label.namespace);
-      return t(label.id, label.fallback ?? fallback ?? label.id);
+      return t(label.id, fallback);
     }
-    const { t } = reactTranslation(namespace ?? DEFAULT_NAMESPACE);
-    return label ? t(label) : fallback ?? "";
+
+    return label ? t(label) ?? fallback : fallback;
   }
 
   return { localize };
 }
-
 export type LanguageStore = {
   currentLanguage: string;
   availableLanguages: { [key: string]: { [namespace: string]: Localization } };

@@ -22,6 +22,8 @@ const VIEW = [...MAIN_MENU_BAR, "4_view_menu"];
 const VIEW_ZOOM_IN = [...VIEW, "1_zoom_in"];
 const VIEW_ZOOM_OUT = [...VIEW, "2_zoom_out"];
 
+export const LANGUAGE_NAMESPACE = "flex-ui";
+
 @injectable()
 export default class FlexUIApplication implements FrontEndApplication {
   constructor(
@@ -29,7 +31,7 @@ export default class FlexUIApplication implements FrontEndApplication {
     @inject(TYPES.OpenHandler)
     protected readonly openHandler: flexCore.OpenHandler,
     @inject(TYPES.LanguageNSRegistry)
-    @named("flex-ui")
+    @named(LANGUAGE_NAMESPACE)
     protected readonly nls: LanguageNSRegistry,
   ) {}
   initialize(): void {
