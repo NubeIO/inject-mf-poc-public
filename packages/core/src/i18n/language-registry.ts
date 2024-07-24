@@ -7,7 +7,6 @@ import { LanguageLabel } from "./types";
 
 export type Localization = {
   languageId: string;
-  languageName?: string;
   order?: number;
   translations: { [key: string]: any };
 };
@@ -34,7 +33,6 @@ export type LanguageStore = {
   setCurrentLanguage: (langaugeId: string) => void;
   registerLanguage: (
     languageId: string,
-    languageName: string,
     translations: { [key: string]: any },
     order?: number,
   ) => Localization;
@@ -52,7 +50,6 @@ export class LanguageRegistry implements LanguageStore, Store<LanguageStore> {
     },
     registerLanguage: (
       languageId: string,
-      languageName: string,
       translations: { [key: string]: any },
       order?: number,
     ) => {
@@ -69,7 +66,6 @@ export class LanguageRegistry implements LanguageStore, Store<LanguageStore> {
 
         const updatedLanguage: Localization = {
           ...existingLanguage,
-          languageName: languageName || existingLanguage.languageName,
           translations: mergedTranslations,
         };
 
@@ -84,7 +80,6 @@ export class LanguageRegistry implements LanguageStore, Store<LanguageStore> {
       } else {
         const newLanguage: Localization = {
           languageId,
-          languageName,
           translations,
         };
 
@@ -109,13 +104,11 @@ export class LanguageRegistry implements LanguageStore, Store<LanguageStore> {
     this.getState().setCurrentLanguage(langaugeId);
   registerLanguage = (
     languageId: string,
-    languageName: string,
     translations: { [key: string]: any },
     order?: number,
   ) =>
     this.getState().registerLanguage(
       languageId,
-      languageName,
       translations,
       order,
     );

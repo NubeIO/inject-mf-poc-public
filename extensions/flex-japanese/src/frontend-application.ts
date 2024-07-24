@@ -24,7 +24,7 @@ export default class FlexJapaneseApplication implements FrontEndApplication {
     protected readonly nls: LocalizationService,
   ) {}
   initialize(): void {
-    this.languageRegistry.registerLanguage("ja", "日本語", jaTranslations);
+    this.languageRegistry.registerLanguage("ja", jaTranslations);
 
     this.menuRegistry.registerMenuAction(LANGUAGE_JA, {
       label: this.nls.localize("menu.language.ja", "日本語"),

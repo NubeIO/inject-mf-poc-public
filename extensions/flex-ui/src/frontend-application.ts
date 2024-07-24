@@ -34,8 +34,8 @@ export default class FlexUIApplication implements FrontEndApplication {
     protected readonly nls: LocalizationService,
   ) {}
   initialize(): void {
-    this.languageRegistry.registerLanguage("en", "English", enTranslations);
-    this.languageRegistry.registerLanguage("zh", "语言", zhTranslations);
+    this.languageRegistry.registerLanguage("en", enTranslations);
+    this.languageRegistry.registerLanguage("zh", zhTranslations);
 
     this.menuRegistry.registerMenuAction(EDIT, {
       label: this.nls.localize("menu.edit", "Edit"),

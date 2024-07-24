@@ -26,8 +26,8 @@ export class CoreFrontendApplication implements FrontEndApplication {
   ) {}
 
   public initialize() {
-    this.languageRegistry.registerLanguage("en", "English", enTranslations);
-    this.languageRegistry.registerLanguage("zh", "语言", zhTranslations);
+    this.languageRegistry.registerLanguage("en", enTranslations);
+    this.languageRegistry.registerLanguage("zh", zhTranslations);
 
     this.menuRegistry.registerMenuAction(FILE, {
       label: this.nls.localize("menu.file", "File"),
