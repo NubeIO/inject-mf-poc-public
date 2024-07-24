@@ -1,0 +1,10 @@
+{
+    "welcome": "Welcome to Flex",
+    "menu": {
+        "file":"File",
+        "new_file": "New File",
+        "help": "Help",
+        "language": "Language",
+        "about": "About"
+    }
+}

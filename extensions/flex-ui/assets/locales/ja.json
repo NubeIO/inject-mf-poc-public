@@ -1,0 +1,16 @@
+{
+    "welcome": "Flexへようこそ",
+    "menu": {
+        "file": "ファイル",
+        "new_file": "新規ファイル",
+        "help": "ヘルプ",
+        "language": "言語",
+        "about": "情報",
+        "edit": "編集",
+        "undo": "元に戻す",
+        "redo": "やり直し",
+        "view": "表示",
+        "zoom_in": "ズームイン",
+        "zoom_out": "ズームアウト"
+    }
+}

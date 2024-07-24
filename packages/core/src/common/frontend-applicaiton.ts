@@ -4,6 +4,7 @@ import { TYPES } from "./types";
 
 export interface FrontEndApplication {
   initialize(): void;
+  onRemove?(): void;
 }
 
 export const initializeApplication = (container: Container) => {

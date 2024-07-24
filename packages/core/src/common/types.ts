@@ -14,4 +14,6 @@ export const TYPES = {
   WidgetManager: Symbol.for("WidgetManager"),
   WidgetFactory: Symbol.for("WidgetFactory"),
   BearStore: Symbol.for("BearStore"),
+  LanguageRegistry: Symbol.for("LanguageRegistry"),
+  LocalizationService: Symbol.for("LocalizationService"),
 };

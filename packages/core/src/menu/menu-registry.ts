@@ -5,6 +5,7 @@ import { MenuNode, MenuPath } from "./menu-type";
 @injectable()
 export class MenuRegistry {
   protected readonly _root: MenuNode = {
+    label: "",
     children: [],
   };
 

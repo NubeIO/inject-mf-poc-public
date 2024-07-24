@@ -1,0 +1,10 @@
+{
+    "welcome": "欢迎使用 Flex",
+    "menu": {
+        "file": "文件",
+        "new_file": "新文件",
+        "help": "帮助",
+        "language": "语言",
+        "about": "关于"
+    }
+}

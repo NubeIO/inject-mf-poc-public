@@ -5,6 +5,7 @@ import { ContainerModule } from "inversify";
 import { BearStore } from "./bears";
 import { FrontEndApplication, TYPES } from "./common";
 import { CoreFrontendApplication } from "./core-application";
+import { LanguageRegistry, LocalizationService } from "./i18n";
 import { MenuRegistry } from "./menu";
 import { OpenHandler, OpenService, WidgetManager } from "./widget";
 
@@ -12,10 +13,13 @@ const coreContainer = new ContainerModule((bind) => {
   bind(TYPES.MenuRegistry).to(MenuRegistry).inSingletonScope();
   bind(TYPES.WidgetManager).to(WidgetManager).inSingletonScope();
   bind(TYPES.BearStore).to(BearStore).inSingletonScope();
+  bind(TYPES.LanguageRegistry).to(LanguageRegistry).inSingletonScope();
+  bind(TYPES.LocalizationService).to(LocalizationService).inSingletonScope();
 
   bind<FrontEndApplication>(TYPES.FrontEndApplication).to(
     CoreFrontendApplication,
   );
+
   bind<CoreFrontendApplication>(CoreFrontendApplication)
     .toSelf()
     .inSingletonScope();

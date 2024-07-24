@@ -6,6 +6,8 @@ import {
   TYPES,
   FrontEndApplication,
   BearStore,
+  LanguageRegistry,
+  LocalizationService,
 } from "@nubeio/flex-core";
 
 const ACCOUNT = [...MAIN_MENU_BAR, "2_accounts_menu"];
@@ -23,6 +25,10 @@ export default class FlexBusinessApplication implements FrontEndApplication {
   constructor(
     @inject(TYPES.MenuRegistry) protected readonly menuRegistry: MenuRegistry,
     @inject(TYPES.BearStore) protected readonly bearsStore: BearStore,
+    @inject(TYPES.LanguageRegistry)
+    protected readonly languageRegistry: LanguageRegistry,
+    @inject(TYPES.LocalizationService)
+    protected readonly nls: LocalizationService,
   ) {
     this.bearsStore.subscribe((state, preState) => {
       console.log("Subscribe in Core", state, preState);
@@ -30,6 +36,14 @@ export default class FlexBusinessApplication implements FrontEndApplication {
   }
 
   initialize(): void {
+    this.languageRegistry.registerLanguage(
+      "en",
+      "English",
+      {
+        welcome: "Welcome to Flex (Business)",
+        menu: { file: "File (Business)" },
+      },
+    );
     this.menuRegistry.registerMenuAction(ACCOUNT, {
       label: "Accounts",
     });

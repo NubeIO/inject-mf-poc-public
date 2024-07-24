@@ -1,0 +1,11 @@
+{
+    "menu": {
+        "file": "File (UI)",
+        "edit": "Edit",
+        "undo": "Undo",
+        "redo": "Redo",
+        "view": "View",
+        "zoom_in": "Zoom In",
+        "zoom_out":"Zoom Out"
+    }
+}
