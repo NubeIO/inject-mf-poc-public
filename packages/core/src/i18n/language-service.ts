@@ -57,10 +57,7 @@ export class LocalizationService {
     this.languageRegistry.setCurrentLanguage(languageId);
   }
 
-  localize(
-    key: string,
-    fallback?: string,
-  ): LanguageLabel {
+  localize(key: string, fallback?: string): LanguageLabel {
     return { id: key, fallback };
   }
 }

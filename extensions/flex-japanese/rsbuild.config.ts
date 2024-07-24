@@ -5,19 +5,21 @@ import { ModuleFederationPlugin } from "@module-federation/enhanced/rspack";
 
 export default defineConfig({
   server: {
-    port: 8000,
+    port: 3002,
+  },
+  dev: {
+    // It is necessary to configure assetPrefix, and in the production environment, you need to configure output.assetPrefix
+    assetPrefix: "http://localhost:3002",
   },
   tools: {
-    rspack: (_, { appendPlugins }) => {
+    rspack: (config, { appendPlugins }) => {
+      // You need to set a unique value that is not equal to other applications
+      config.output!.uniqueName = "flex_japanese";
       appendPlugins([
         new ModuleFederationPlugin({
-          name: "flex",
-          remotes: {
-            flex_ui: "flex_ui@http://localhost:3000/mf-manifest.json",
-            flex_business:
-              "flex_business@http://localhost:3001/mf-manifest.json",
-            flex_japanese:
-              "flex_japanese@http://localhost:3002/mf-manifest.json",
+          name: "flex_japanese",
+          exposes: {
+            "./module": "./src/module.ts",
           },
           shared: {
             react: { singleton: true },

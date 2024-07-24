@@ -12,7 +12,6 @@ import {
 
 import enTranslations from "../assets/locales/en.json";
 import zhTranslations from "../assets/locales/zh.json";
-import jaTranslations from "../assets/locales/ja.json";
 
 import * as flexCore from "@nubeio/flex-core";
 
@@ -22,9 +21,6 @@ const EDIT_REDO = [...EDIT, "2_redo"];
 const VIEW = [...MAIN_MENU_BAR, "4_view_menu"];
 const VIEW_ZOOM_IN = [...VIEW, "1_zoom_in"];
 const VIEW_ZOOM_OUT = [...VIEW, "2_zoom_out"];
-
-const LANGUAGE = [...MAIN_MENU_BAR, "8_language"];
-const LANGUAGE_JA = [...LANGUAGE, "3_language_ja"];
 
 @injectable()
 export default class FlexUIApplication implements FrontEndApplication {
@@ -40,7 +36,6 @@ export default class FlexUIApplication implements FrontEndApplication {
   initialize(): void {
     this.languageRegistry.registerLanguage("en", "English", enTranslations);
     this.languageRegistry.registerLanguage("zh", "语言", zhTranslations);
-    this.languageRegistry.registerLanguage("ja", "日本語", jaTranslations);
 
     this.menuRegistry.registerMenuAction(EDIT, {
       label: this.nls.localize("menu.edit", "Edit"),
@@ -71,12 +66,6 @@ export default class FlexUIApplication implements FrontEndApplication {
       label: this.nls.localize("menu.zoom_out", "Zoom Out"),
       execute(...args) {
         console.log("Zoom Out");
-      },
-    });
-    this.menuRegistry.registerMenuAction(LANGUAGE_JA, {
-      label: this.nls.localize("menu.language.ja", "日本語"),
-      execute: (...args) => {
-        this.nls.changeLanguage("ja");
       },
     });
   }
