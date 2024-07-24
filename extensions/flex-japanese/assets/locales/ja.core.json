@@ -1,0 +1,10 @@
+{
+    "welcome": "Flexへようこそ",
+    "menu": {
+        "file": "ファイル",
+        "new_file": "新規ファイル",
+        "help": "ヘルプ",
+        "language": "言語",
+        "about": "情報"
+    }
+}

@@ -9,7 +9,8 @@ import {
   LocalizationService,
 } from "@nubeio/flex-core";
 
-import jaTranslations from "../assets/locales/ja.json";
+import jaCoreTranslations from "../assets/locales/ja.core.json";
+import jaUITranslations from "../assets/locales/ja.ui.json";
 
 const LANGUAGE = [...MAIN_MENU_BAR, "8_language"];
 const LANGUAGE_JA = [...LANGUAGE, "3_language_ja"];
@@ -24,8 +25,8 @@ export default class FlexJapaneseApplication implements FrontEndApplication {
     protected readonly nls: LocalizationService,
   ) {}
   initialize(): void {
-    this.languageRegistry.registerLanguage("ja", jaTranslations);
-    this.languageRegistry.registerLanguage("ja", jaTranslations, "flex-ui");
+    this.languageRegistry.registerLanguage("ja", jaCoreTranslations);
+    this.languageRegistry.registerLanguage("ja", jaUITranslations, "flex-ui");
 
     this.menuRegistry.registerMenuAction(LANGUAGE_JA, {
       label: this.nls.localize("menu.language.ja", "core", "日本語"),
