@@ -26,44 +26,44 @@ export class CoreFrontendApplication implements FrontEndApplication {
   ) {}
 
   public initialize() {
-    this.languageRegistry.registerLanguage("en", enTranslations);
-    this.languageRegistry.registerLanguage("zh", zhTranslations);
+    this.languageRegistry.registerLanguage("en", "core", enTranslations);
+    this.languageRegistry.registerLanguage("zh", "core", zhTranslations);
 
     this.menuRegistry.registerMenuAction(FILE, {
-      label: this.nls.localize("menu.file", "File"),
+      label: this.nls.localize("menu.file", "core", "File"),
     });
 
     this.menuRegistry.registerMenuAction(FILE_NEW, {
-      label: this.nls.localize("menu.new_file", "New File"),
+      label: this.nls.localize("menu.new_file", "core", "New File"),
       execute(...args) {
         console.log("File");
       },
     });
 
     this.menuRegistry.registerMenuAction(HELP, {
-      label: this.nls.localize("menu.help", "Help"),
+      label: this.nls.localize("menu.help", "core", "Help"),
     });
 
     this.menuRegistry.registerMenuAction(HELP_ABOUT, {
-      label: this.nls.localize("menu.about", "About"),
+      label: this.nls.localize("menu.about", "core", "About"),
       execute(...args) {
         console.log("About");
       },
     });
 
     this.menuRegistry.registerMenuAction(LANGUAGE, {
-      label: this.nls.localize("menu.language", "Language"),
+      label: this.nls.localize("menu.language", "core", "Language"),
     });
 
     this.menuRegistry.registerMenuAction(LANGUAGE_EN, {
-      label: this.nls.localize("menu.language.en", "English"),
+      label: this.nls.localize("menu.language.en", "core", "English"),
       execute: (...args) => {
         this.nls.changeLanguage("en");
       },
     });
 
     this.menuRegistry.registerMenuAction(LANGUAGE_ZH, {
-      label: this.nls.localize("menu.language.zh", "语言"),
+      label: this.nls.localize("menu.language.zh", "core", "语言"),
       execute: (...args) => {
         this.nls.changeLanguage("zh");
       },

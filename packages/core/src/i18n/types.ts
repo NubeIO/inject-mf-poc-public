@@ -1,5 +1,6 @@
 export interface LanguageLabel {
   id: string;
+  namespace?: string;
   fallback?: string;
 }
 

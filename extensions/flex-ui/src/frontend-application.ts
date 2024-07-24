@@ -34,36 +34,36 @@ export default class FlexUIApplication implements FrontEndApplication {
     protected readonly nls: LocalizationService,
   ) {}
   initialize(): void {
-    this.languageRegistry.registerLanguage("en", enTranslations);
-    this.languageRegistry.registerLanguage("zh", zhTranslations);
+    this.languageRegistry.registerLanguage("en", "flex-ui", enTranslations);
+    this.languageRegistry.registerLanguage("zh", "flex-ui", zhTranslations);
 
     this.menuRegistry.registerMenuAction(EDIT, {
-      label: this.nls.localize("menu.edit", "Edit"),
+      label: this.nls.localize("menu.edit", "flex-ui", "Edit"),
     });
 
     this.menuRegistry.registerMenuAction(EDIT_UNDO, {
-      label: this.nls.localize("menu.undo", "Undo"),
+      label: this.nls.localize("menu.undo", "flex-ui", "Undo"),
       execute: (...args) => {
         this.openHandler.open(URI.parse("wires://nube.wires/?id=undo"));
       },
     });
     this.menuRegistry.registerMenuAction(EDIT_REDO, {
-      label: this.nls.localize("menu.redo", "Redo"),
+      label: this.nls.localize("menu.redo", "flex-ui", "Redo"),
       execute: (...args) => {
         this.openHandler.open(URI.parse("wires://nube.wires/?id=redo"));
       },
     });
     this.menuRegistry.registerMenuAction(VIEW, {
-      label: this.nls.localize("menu.view", "View"),
+      label: this.nls.localize("menu.view", "flex-ui", "View"),
     });
     this.menuRegistry.registerMenuAction(VIEW_ZOOM_IN, {
-      label: this.nls.localize("menu.zoom_in", "Zoom In"),
+      label: this.nls.localize("menu.zoom_in", "flex-ui", "Zoom In"),
       execute(...args) {
         console.log("Zoom In");
       },
     });
     this.menuRegistry.registerMenuAction(VIEW_ZOOM_OUT, {
-      label: this.nls.localize("menu.zoom_out", "Zoom Out"),
+      label: this.nls.localize("menu.zoom_out", "flex-ui", "Zoom Out"),
       execute(...args) {
         console.log("Zoom Out");
       },

@@ -36,10 +36,6 @@ export default class FlexBusinessApplication implements FrontEndApplication {
   }
 
   initialize(): void {
-    this.languageRegistry.registerLanguage("en", "English", {
-      welcome: "Welcome to Flex (Business)",
-      menu: { file: "File (Business)" },
-    });
     this.menuRegistry.registerMenuAction(ACCOUNT, {
       label: "Accounts",
     });

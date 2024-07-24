@@ -1,6 +1,5 @@
 {
     "menu": {
-        "file": "File (UI)",
         "edit": "Edit",
         "undo": "Undo",
         "redo": "Redo",

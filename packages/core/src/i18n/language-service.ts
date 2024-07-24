@@ -42,13 +42,17 @@ export class LocalizationService {
     }
   };
 
-  private updateResources = (languages: { [key: string]: Localization }) => {
+  private updateResources = (languages: {
+    [key: string]: { [namespace: string]: Localization };
+  }) => {
     Object.keys(languages).forEach((languageId) => {
-      i18n.addResources(
-        languageId,
-        "translation",
-        flattenTranslations(languages[languageId].translations),
-      );
+      Object.keys(languages[languageId]).forEach((namespace) => {
+        i18n.addResources(
+          languageId,
+          namespace,
+          flattenTranslations(languages[languageId][namespace].translations),
+        );
+      });
     });
   };
 
@@ -57,8 +61,8 @@ export class LocalizationService {
     this.languageRegistry.setCurrentLanguage(languageId);
   }
 
-  localize(key: string, fallback?: string): LanguageLabel {
-    return { id: key, fallback };
+  localize(key: string, namespace: string, fallback?: string): LanguageLabel {
+    return { id: key, namespace, fallback };
   }
 }
 
