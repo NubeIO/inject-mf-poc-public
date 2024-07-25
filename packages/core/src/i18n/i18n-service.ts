@@ -2,14 +2,9 @@ import React from "react";
 import axios from "axios";
 import { inject, injectable } from "inversify";
 
-import {
-  ExtensionLanguageInfo,
-  II18nService,
-  ILanguageRegistry,
-  LangRegistry,
-  LangResorces,
-} from "./i18n-type";
 
+
+import { ExtensionLanguageInfo, II18nService, ILanguageRegistry, LangRegistry, LangResorces } from "./i18n-type";
 @injectable()
 export class I18nService {
   async getFlexAvaiableLangCodes(): Promise<string[]> {
@@ -24,6 +19,19 @@ export class I18nService {
 
   async addExtensionTranslation(translationObj: any): Promise<void> {
     await axios.post("http://localhost:4000/new-translations", translationObj);
+  }
+
+  async getAllTranslations(): Promise<any> {
+    const res = await axios.get("http://localhost:4000/all-translations");
+    return res?.data?.translations || {};
+  }
+
+  async updateTranslations(translationObj: any): Promise<void> {
+    console.log("post obj is: ", translationObj);
+    await axios.post(
+      "http://localhost:4000/update-translations",
+      translationObj,
+    );
   }
 
   // getLangRegistry(): Promise<LangRegistry> {

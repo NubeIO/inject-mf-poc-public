@@ -31,6 +31,10 @@ type TranslationRequest struct {
 	Data				map[string]map[string]string `json:"data"`
 }
 
+type UpdatedTranslationRequest struct {
+	Data map[string]map[string]map[string]string `json:"data"`
+}
+
 type Config struct {
 	Version    int            `json:"version"`
 	Extensions map[string]App `json:"extensions"`
@@ -190,6 +194,12 @@ func main() {
 		// the first layer of data object contains all the language codes where the second layer contains the translations
 		// Create the folder using the extension's name
 		dirPath := filepath.Join("./static/translations", jsonReq.Name)
+
+		// check if the folder already exists and return early if it does
+		if _, err := os.Stat(dirPath); !os.IsNotExist(err) {
+			c.JSON(http.StatusOK, gin.H{"creation": "folder already exists"})
+			return
+		}
 		
 		// Use os.Mkdir to create a single directory
 		err := os.Mkdir(dirPath, 0755)
@@ -233,6 +243,108 @@ func main() {
 		}
 
 		c.JSON(http.StatusOK, gin.H{"creation": "successful"})
+	})
+
+	// get all translations stored in the translations folder
+	// structured as follows: translations/extensionName/languageCode/dictionary.json
+	r.GET("/all-translations", func(c *gin.Context) {
+		translations := map[string]map[string]map[string]string{}
+		// Read the translations folder and list out the subfolders
+		translationsFolder := filepath.Join("./static", "translations")
+		files, err := ioutil.ReadDir(translationsFolder)
+		if err != nil {
+			fmt.Println("Error reading translations folder:", err)
+			return
+		}
+
+		// Get the names of the subfolders in the translations folder
+		for _, file := range files {
+			if file.IsDir() {
+				extensionName := file.Name()
+				translations[extensionName] = map[string]map[string]string{}
+				extensionPath := filepath.Join(translationsFolder, extensionName)
+				extensionFiles, err := ioutil.ReadDir(extensionPath)
+				if err != nil {
+					fmt.Println("Error reading extension folder:", err)
+					return
+				}
+				for _, extensionFile := range extensionFiles {
+					if extensionFile.IsDir() {
+						languageCode := extensionFile.Name()
+						translations[extensionName][languageCode] = map[string]string{}
+						languagePath := filepath.Join(extensionPath, languageCode)
+						languageFiles, err := ioutil.ReadDir(languagePath)
+						if err != nil {
+							fmt.Println("Error reading language folder:", err)
+							return
+						}
+						for _, languageFile := range languageFiles {
+							if !languageFile.IsDir() {
+								filePath := filepath.Join(languagePath, languageFile.Name())
+								fileData, err := ioutil.ReadFile(filePath)
+								if err != nil {
+									fmt.Println("Error reading file:", err)
+									return
+								}
+								var translationData map[string]string
+								if err := json.Unmarshal(fileData, &translationData); err != nil {
+									fmt.Println("Error:", err)
+									return
+								}
+								translations[extensionName][languageCode] = translationData
+							}
+						}
+					}
+				}
+			}
+		}
+
+		c.JSON(http.StatusOK, gin.H{"translations": translations})
+	})
+
+	// Define POST endpoint to modify the translation dictionary files
+	// the post object is structured as: {[extensionName: string]: {[languageCode: string]: {[key: string]: string}}}
+	// the post operation will rewrite all dictionary.json files according to the post object
+	r.POST("/update-translations", func(c *gin.Context) {
+		// Bind JSON request body to TranslationRequest struct
+		var jsonReq UpdatedTranslationRequest
+		if err := c.BindJSON(&jsonReq); err != nil {
+			log.Println("Unable to parse JSON")
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Unable to parse JSON"})
+			return
+		}
+
+		// iterate through the post object and rewrite all dictionary.json files
+		for extensionName, languageData := range jsonReq.Data {
+			for languageCode, translationData := range languageData {
+				// create the dictionary.json file
+				filePath := filepath.Join("./static/translations", extensionName, languageCode, "dictionary.json")
+				
+				// Marshal the struct to JSON
+				jsonTranslationData, err := json.MarshalIndent(translationData, "", "  ")
+				if err != nil {
+						fmt.Println(err)
+						return
+				}
+		
+				// Create the JSON file
+				file, err := os.Create(filePath)
+				if err != nil {
+						fmt.Println(err)
+						return
+				}
+				defer file.Close()
+		
+				// Write the JSON data to the file
+				_, err = file.Write(jsonTranslationData)
+				if err != nil {
+						fmt.Println(err)
+						return
+				}
+			}
+		}
+
+		c.JSON(http.StatusOK, gin.H{"modification": "successful"})
 	})
 
 	// Define PUT endpoint to modify a static file
