@@ -9,3 +9,4 @@ export * from "./layouts";
 export * from "./extensions-loader";
 export * from "./stores";
 export * from "./i18n";
+export * from "./communication";

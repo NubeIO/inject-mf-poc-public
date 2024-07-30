@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 
 
 
+import { CommunicationService } from "../communication/communication-service";
 import { ExtensionsLoader } from "../extensions-loader";
 import { LanguageRegistry } from "../i18n/i18n-registry";
 import { I18nService } from "../i18n/i18n-service";
@@ -26,4 +27,5 @@ export const TYPES = {
   StoreManager: Symbol.for("StoreManager"),
   LanguageRegistry: Symbol.for("LanguageRegistry"),
   I18nService: Symbol.for("I18nService"),
+  CommunicationService: Symbol.for("CommunicationService"),
 };

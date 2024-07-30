@@ -8,7 +8,11 @@ import "reflect-metadata";
 import axios from "axios";
 import { AsyncContainerModule, ContainerModule } from "inversify";
 
+
+
 import { FrontEndApplication, TYPES } from "./common";
+import { CommunicationService } from "./communication/communication-service";
+import { ICommunicationService } from "./communication/communication-service-type";
 import { CoreFrontendApplication } from "./core-application";
 import { ExtensionsLoader } from "./extensions-loader";
 import { II18nService, ILanguageRegistry } from "./i18n";
@@ -27,17 +31,9 @@ const coreContainer = new ContainerModule((bind) => {
   bind(TYPES.StoreManager).to(StoreManager).inSingletonScope();
 
   bind(TYPES.I18nService).to(I18nService).inSingletonScope();
-  // const res = await axios.get("http://localhost:4000/extension-namespaces");
-  // const ns = res?.data?.extensionNamespaces || [];
-  // bind<ILanguageRegistry>(TYPES.LanguageRegistry)
-  //   .toDynamicValue(async (context) => {
-  //     const i18nService = context.container.get<II18nService>(
-  //       TYPES.I18nService,
-  //     );
-
-  //     return new LanguageRegistry(["flex", "i18n-manager"], i18nService);
-  //   })
-  //   .inSingletonScope();
+  bind<ICommunicationService>(TYPES.CommunicationService)
+    .to(CommunicationService)
+    .inSingletonScope();
 
   bind<ILanguageRegistry>(TYPES.LanguageRegistry)
     .to(LanguageRegistry)

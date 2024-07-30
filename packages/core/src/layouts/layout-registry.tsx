@@ -8,7 +8,8 @@ import { generateUuid } from "@nubeio/ui";
 
 
 
-import { URI } from "../";
+import type { ICommunicationService } from "../communication/communication-service-type";
+import { CommunicationService, URI } from "../";
 import { TYPES } from "../common";
 import { LAYOUT_LOCAL_STORAGE_KEY, presetIdArr } from "../constants";
 import { ExtensionsLoader } from "../extensions-loader";
@@ -36,6 +37,7 @@ export class LayoutRegistry {
   private widgetManager: WidgetManager;
   private i18nService: I18nService;
   private languageRegistry: LanguageRegistry;
+  private communicationService: ICommunicationService;
 
   constructor(
     @inject(TYPES.ExtensionsLoader) private _extensionsLoader: ExtensionsLoader,
@@ -43,6 +45,8 @@ export class LayoutRegistry {
     @inject(TYPES.WidgetManager) private _widgetManager: WidgetManager,
     @inject(TYPES.I18nService) private _i18nService: I18nService,
     @inject(TYPES.LanguageRegistry) private _languageRegistry: LanguageRegistry,
+    @inject(TYPES.CommunicationService)
+    private _communicationService: ICommunicationService,
   ) {
     // console.log("_languageRegistry is: ", _languageRegistry);
     this.storeManager = _storeManger;
@@ -50,6 +54,7 @@ export class LayoutRegistry {
     this.widgetManager = _widgetManager;
     this.i18nService = _i18nService;
     this.languageRegistry = _languageRegistry;
+    this.communicationService = _communicationService;
     const storedLayouts = localStorage.getItem(LAYOUT_LOCAL_STORAGE_KEY);
     if (storedLayouts) {
       // parsedLayouts contains the saved layouts, however, the content of each none empty layout needs to be repopulated
@@ -108,6 +113,7 @@ export class LayoutRegistry {
       storeManager: this.storeManager,
       i18nService: this.i18nService,
       languageRegistry: this.languageRegistry,
+      communicationService: this.communicationService,
     };
     console.log("classes before injection: ", classes);
     return <Extension api={this.storeManager.getStore} coreClasses={classes} />;

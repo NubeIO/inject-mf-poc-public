@@ -21,6 +21,7 @@
     "@module-federation/enhanced": "^0.2.0",
     "@nubeio/ui": "workspace:*",
     "axios": "^1.7.2",
+    "eventemitter3": "^5.0.1",
     "i18next": "^23.12.1",
     "i18next-browser-languagedetector": "^8.0.0",
     "i18next-http-backend": "^2.5.2",

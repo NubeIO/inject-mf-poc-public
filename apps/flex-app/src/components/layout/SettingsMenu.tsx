@@ -15,16 +15,28 @@ import {
 import { useTranslation } from "react-i18next"
 import { useInjection, useContainer } from "inversify-react"
 import { interfaces } from "inversify"
-import { TYPES, LanguageRegistry, ILanguageRegistry } from "@nubeio/flex-core"
+import {
+  TYPES,
+  LanguageRegistry,
+  ILanguageRegistry,
+  ICommunicationService,
+} from "@nubeio/flex-core"
 
 export function SettingsMenu(props: any) {
   const { children } = props
   const languageRegistry = useInjection<LanguageRegistry>(
     TYPES.LanguageRegistry
   )
+  const commService = useInjection<ICommunicationService>(
+    TYPES.CommunicationService
+  )
   const { t, i18n } = useTranslation("flex")
 
   const options = languageRegistry?.getLanguageOptions() || []
+
+  const handleLogoutClick = () => {
+    commService.publishToTopic("flex.settings.logout", { message: "logout" })
+  }
 
   return (
     <DropdownMenu>
@@ -92,7 +104,7 @@ export function SettingsMenu(props: any) {
         <DropdownMenuItem>Support</DropdownMenuItem>
         <DropdownMenuItem disabled>API</DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={handleLogoutClick}>
           Log out
           <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
         </DropdownMenuItem>
