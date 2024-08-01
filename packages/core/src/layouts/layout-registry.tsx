@@ -10,6 +10,7 @@ import { generateUuid } from "@nubeio/ui";
 
 import type { ICommunicationService } from "../communication/communication-service-type";
 import { CommunicationService, URI } from "../";
+import { AclService } from "../acl/acl-service";
 import { TYPES } from "../common";
 import { LAYOUT_LOCAL_STORAGE_KEY, presetIdArr } from "../constants";
 import { ExtensionsLoader } from "../extensions-loader";
@@ -17,14 +18,8 @@ import { I18nService, II18nService, LanguageRegistry } from "../i18n";
 import { StoreManager } from "../stores";
 import { WidgetManager } from "../widget";
 import { fourPanel, onePanel, threePanel, twoPanel } from "./layout-presets";
-import {
-  AllLayouts,
-  ChangeListener,
-  Layout,
-  LayoutConfig,
-  PanelPresetModes,
-  PresetID,
-} from "./layout-type";
+import { AllLayouts, ChangeListener, Layout, LayoutConfig, PanelPresetModes, PresetID } from "./layout-type";
+
 
 @injectable()
 export class LayoutRegistry {
@@ -38,6 +33,7 @@ export class LayoutRegistry {
   private i18nService: I18nService;
   private languageRegistry: LanguageRegistry;
   private communicationService: ICommunicationService;
+  private aclService: AclService;
 
   constructor(
     @inject(TYPES.ExtensionsLoader) private _extensionsLoader: ExtensionsLoader,
@@ -47,6 +43,8 @@ export class LayoutRegistry {
     @inject(TYPES.LanguageRegistry) private _languageRegistry: LanguageRegistry,
     @inject(TYPES.CommunicationService)
     private _communicationService: ICommunicationService,
+    @inject(TYPES.AclService)
+    private _aclService: AclService,
   ) {
     // console.log("_languageRegistry is: ", _languageRegistry);
     this.storeManager = _storeManger;
@@ -55,6 +53,7 @@ export class LayoutRegistry {
     this.i18nService = _i18nService;
     this.languageRegistry = _languageRegistry;
     this.communicationService = _communicationService;
+    this.aclService = _aclService;
     const storedLayouts = localStorage.getItem(LAYOUT_LOCAL_STORAGE_KEY);
     if (storedLayouts) {
       // parsedLayouts contains the saved layouts, however, the content of each none empty layout needs to be repopulated
@@ -114,6 +113,7 @@ export class LayoutRegistry {
       i18nService: this.i18nService,
       languageRegistry: this.languageRegistry,
       communicationService: this.communicationService,
+      aclService: this.aclService,
     };
     console.log("classes before injection: ", classes);
     return <Extension api={this.storeManager.getStore} coreClasses={classes} />;
@@ -150,6 +150,26 @@ export class LayoutRegistry {
       );
       return {
         ...singleLayout,
+        children: children,
+      };
+    }
+  }
+
+  // traverse the layout and remove the content of each layout
+  traverseAndRemove(layout: any) {
+    if (layout.children.length === 0) {
+      return {
+        ...layout,
+        content: null,
+      };
+    } else {
+      const children: LayoutConfig[] = layout.children.map(
+        (child: LayoutConfig) => {
+          return this.traverseAndRemove(child);
+        },
+      );
+      return {
+        ...layout,
         children: children,
       };
     }
@@ -206,10 +226,16 @@ export class LayoutRegistry {
   }
 
   persistLayouts(): void {
-    localStorage.setItem(
-      LAYOUT_LOCAL_STORAGE_KEY,
-      JSON.stringify(this.allLayouts),
-    );
+    const copyLayouts = { ...this.allLayouts };
+    Object.keys(copyLayouts).forEach((key) => {
+      const layout = copyLayouts[key];
+      if (layout.layout.children.length === 0) {
+        layout.layout.content = null;
+      } else {
+        layout.layout = this.traverseAndRemove(layout.layout);
+      }
+    });
+    localStorage.setItem(LAYOUT_LOCAL_STORAGE_KEY, JSON.stringify(copyLayouts));
   }
 
   private add(newLayout: Layout): void {

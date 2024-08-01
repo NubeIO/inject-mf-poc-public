@@ -10,6 +10,7 @@ import { AsyncContainerModule, ContainerModule } from "inversify";
 
 
 
+import { AclService } from "./acl/acl-service";
 import { FrontEndApplication, TYPES } from "./common";
 import { CommunicationService } from "./communication/communication-service";
 import { ICommunicationService } from "./communication/communication-service-type";
@@ -29,6 +30,7 @@ const coreContainer = new ContainerModule((bind) => {
   bind(TYPES.LayoutRegistry).to(LayoutRegistry).inSingletonScope();
   bind(TYPES.ExtensionsLoader).to(ExtensionsLoader).inSingletonScope();
   bind(TYPES.StoreManager).to(StoreManager).inSingletonScope();
+  bind(TYPES.AclService).to(AclService).inSingletonScope();
 
   bind(TYPES.I18nService).to(I18nService).inSingletonScope();
   bind<ICommunicationService>(TYPES.CommunicationService)

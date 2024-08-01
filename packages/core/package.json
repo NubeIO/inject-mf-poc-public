@@ -18,6 +18,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@casl/ability": "^6.7.1",
     "@module-federation/enhanced": "^0.2.0",
     "@nubeio/ui": "workspace:*",
     "axios": "^1.7.2",

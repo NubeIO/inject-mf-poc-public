@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 
 
 
+import { AclService } from "../acl/acl-service";
 import { CommunicationService } from "../communication/communication-service";
 import { ExtensionsLoader } from "../extensions-loader";
 import { LanguageRegistry } from "../i18n/i18n-registry";
@@ -28,4 +29,5 @@ export const TYPES = {
   LanguageRegistry: Symbol.for("LanguageRegistry"),
   I18nService: Symbol.for("I18nService"),
   CommunicationService: Symbol.for("CommunicationService"),
+  AclService: Symbol.for("AclService"),
 };
