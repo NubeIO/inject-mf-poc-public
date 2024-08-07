@@ -39,7 +39,7 @@ export class LocalizationService {
   ) => {
     if (!deepEqual(state.availableLanguages, prevState.availableLanguages)) {
       this.updateResources(state.availableLanguages);
-      console.log("Available Languages", state.availableLanguages)
+      console.log("Available Languages", state.availableLanguages);
     }
   };
 

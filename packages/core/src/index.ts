@@ -9,3 +9,4 @@ export * from "./menu";
 export * from "./widget";
 export * from "./bears";
 export * from "./scope";
+export * from "./acl";

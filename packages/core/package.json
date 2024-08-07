@@ -20,6 +20,7 @@
   "dependencies": {
     "@module-federation/enhanced": "^0.2.0",
     "@nubeio/ui": "workspace:*",
+    "casbin.js": "^0.5.1",
     "i18next": "^23.12.2",
     "inversify": "^6.0.2",
     "inversify-react": "^1.1.1",
