@@ -8,23 +8,32 @@ import {
   BearStore,
   LanguageRegistry,
   LocalizationService,
+  ACLRegistry,
 } from "@nubeio/flex-core";
 
 const ACCOUNT = [...MAIN_MENU_BAR, "2_accounts_menu"];
-const ACCOUNT_SUBMENU = [...ACCOUNT, "1_accounts_submenu"];
-const ACCOUNT_SUBMENU_RITESH = [
-  ...ACCOUNT_SUBMENU,
-  "1_accounts_submenu_ritesh",
-];
+const ACCOUNT_SUBMENU_RITESH = [...ACCOUNT, "1_accounts_submenu_ritesh"];
+const ACCOUNT_SUBMENU_BINOD = [...ACCOUNT, "1_accounts_submenu_binod"];
 const BEARS = [...MAIN_MENU_BAR, "3_bears"];
 const BEARS_SUBMENU_ADD = [...BEARS, "1_bears_add"];
 const BEARS_SUBMENU_SUBSTRACT = [...BEARS, "2_bears_remove"];
+
+const permDefs = {
+  BINOD: {
+    read: ["MarketingView", "Proposal"],
+  },
+  RITESH: {
+    read: ["Contact", "Database"],
+    delete: ["Database"],
+  },
+};
 
 @injectable()
 export default class FlexBusinessApplication implements FrontEndApplication {
   constructor(
     @inject(TYPES.MenuRegistry) protected readonly menuRegistry: MenuRegistry,
     @inject(TYPES.BearStore) protected readonly bearsStore: BearStore,
+    @inject(TYPES.ACLRegistry) protected readonly aclRegistry: ACLRegistry,
     @inject(TYPES.LanguageRegistry)
     protected readonly languageRegistry: LanguageRegistry,
     @inject(TYPES.LocalizationService)
@@ -39,13 +48,16 @@ export default class FlexBusinessApplication implements FrontEndApplication {
     this.menuRegistry.registerMenuAction(ACCOUNT, {
       label: "Accounts",
     });
-    this.menuRegistry.registerMenuAction(ACCOUNT_SUBMENU, {
-      label: "Ritesh",
-    });
     this.menuRegistry.registerMenuAction(ACCOUNT_SUBMENU_RITESH, {
-      label: "Logout",
-      execute(...args) {
-        console.log("Logout");
+      label: "Ritesh (Admin)",
+      execute: (...args) => {
+        this.aclRegistry.setRules(permDefs.RITESH);
+      },
+    });
+    this.menuRegistry.registerMenuAction(ACCOUNT_SUBMENU_BINOD, {
+      label: "Binod (Basic)",
+      execute: (...args) => {
+        this.aclRegistry.setRules(permDefs.BINOD);
       },
     });
     this.menuRegistry.registerMenuAction(BEARS, {

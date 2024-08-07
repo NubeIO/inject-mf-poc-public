@@ -1,15 +1,11 @@
 import PBUi from "flex_ui/button";
 import PBBusiness from "flex_business/button";
 import { Button } from "@nubeio/ui/button";
-import { Can, useTranslation, useUser } from "@nubeio/flex-core";
+import { Can, useTranslation } from "@nubeio/flex-core";
 type WelcomeComponentProps = {};
 
 export const WelcomeLayout: React.FC<WelcomeComponentProps> = () => {
   const { localize } = useTranslation();
-  const {
-    state: { user },
-    updateUser,
-  } = useUser();
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">

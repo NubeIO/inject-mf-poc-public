@@ -2,6 +2,7 @@ import "reflect-metadata";
 
 import { ContainerModule } from "inversify";
 
+import { ACLRegistry } from "./acl";
 import { BearStore } from "./bears";
 import { FrontEndApplication, TYPES } from "./common";
 import { CoreFrontendApplication } from "./core-application";
@@ -20,6 +21,7 @@ const coreContainer = new ContainerModule((bind) => {
   bind(TYPES.BearStore).to(BearStore).inSingletonScope();
   bind(TYPES.LanguageRegistry).to(LanguageRegistry).inSingletonScope();
   bind(TYPES.LocalizationService).to(LocalizationService).inSingletonScope();
+  bind(TYPES.ACLRegistry).to(ACLRegistry).inSingletonScope();
 
   bind<FrontEndApplication>(TYPES.FrontEndApplication).to(
     CoreFrontendApplication,

@@ -6,12 +6,7 @@ import japaneseContainer from "flex_japanese/module";
 import appContainer from "./module";
 import coreContainer from "@nubeio/flex-core/module";
 
-import {
-  Container,
-  initializeApplication,
-  Provider,
-  UserProvider,
-} from "@nubeio/flex-core";
+import { Container, initializeApplication, Provider } from "@nubeio/flex-core";
 
 import { ChildComponent } from "./components/Layout";
 
@@ -38,9 +33,7 @@ const App = () => {
 
   return (
     <Provider container={container}>
-      <UserProvider>
-        <ChildComponent />
-      </UserProvider>
+      <ChildComponent />
     </Provider>
   );
 };

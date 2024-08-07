@@ -1,6 +1,7 @@
 import React, { ReactNode } from "react";
 
-import { casbinAuthorizer } from "./config";
+import { TYPES, useStore } from "../common";
+import { ACLRegistry } from "./acl-registry";
 
 type Props = {
   children: ReactNode;
@@ -8,20 +9,17 @@ type Props = {
   subject: string;
 };
 
-export function can(action: string, subject: string) {
-  return casbinAuthorizer.permission!.check(action, subject);
-}
-
 export const Can: React.FC<Props> = ({ children, action, subject }) => {
   const [render, setRender] = React.useState(false);
+  const aclRegistry = useStore<ACLRegistry>(TYPES.ACLRegistry);
 
   React.useEffect(() => {
     (async function () {
-      const shouldRender = can(action, subject);
+      const shouldRender = aclRegistry.can(action, subject);
       console.log("shouldRender", shouldRender);
       setRender(shouldRender);
     })();
-  }, [action, subject, casbinAuthorizer.user]);
+  }, [action, subject, aclRegistry.authorizer]);
 
   if (render) return <>{children}</>;
 
