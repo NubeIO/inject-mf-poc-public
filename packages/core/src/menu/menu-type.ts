@@ -1,3 +1,4 @@
+import { ACLPermission } from "../acl";
 import { LanguageLabel } from "../i18n/types";
 
 export type MenuPath = string[];
@@ -9,6 +10,7 @@ export const LANGUAGE_MENU = [...MAIN_MENU_BAR, "8_language"];
 export interface MenuNodeMetadata {
   id?: string;
   label?: string | LanguageLabel;
+  permission?: ACLPermission;
   execute?(...args: any[]): any | undefined;
 }
 

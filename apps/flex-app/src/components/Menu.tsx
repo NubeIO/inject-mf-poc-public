@@ -1,4 +1,5 @@
 import {
+  Can,
   MenuNode,
   MenuRegistry,
   TYPES,
@@ -24,14 +25,20 @@ export const LayoutMenu = (): React.ReactNode => {
   return (
     <Menubar key={menuNode.id}>
       {menuNode.children?.map((menuNode) => (
-        <MenubarMenu key={menuNode.id}>
-          <MenubarTrigger>{localize(menuNode.label)}</MenubarTrigger>
-          {menuNode.children && (
-            <MenubarContent>
-              {menuNode.children.map((item) => renderSubMenu(item))}
-            </MenubarContent>
-          )}
-        </MenubarMenu>
+        <Can key={menuNode.id} permission={menuNode.permission}>
+          <MenubarMenu>
+            <MenubarTrigger>{localize(menuNode.label)}</MenubarTrigger>
+            {menuNode.children && (
+              <MenubarContent>
+                {menuNode.children.map((item) => (
+                  <Can key={item.id} permission={item.permission}>
+                    {renderSubMenu(item)}
+                  </Can>
+                ))}
+              </MenubarContent>
+            )}
+          </MenubarMenu>
+        </Can>
       ))}
     </Menubar>
   );
@@ -42,7 +49,7 @@ const renderSubMenu = (menuNode: MenuNode): React.ReactNode => {
 
   if (menuNode.children && menuNode.children.length)
     return (
-      <MenubarSub key={menuNode.id}>
+      <MenubarSub>
         <MenubarSubTrigger
           onClick={menuNode.execute}
           key={menuNode.id + "trigger"}

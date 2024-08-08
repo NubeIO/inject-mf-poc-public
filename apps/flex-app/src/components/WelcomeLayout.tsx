@@ -14,12 +14,12 @@ export const WelcomeLayout: React.FC<WelcomeComponentProps> = () => {
       </h2>
       <p className="mb-4">Start building amazing things with Rsbuild.</p>
       <div className="flex gap-2">
-        <Can action="delete" subject="Database">
-          <PBUi />
-        </Can>
+        <PBUi />
         <PBBusiness />
       </div>
-      <Button className="mt-2">Hi from App</Button>
+      <Can action="delete" subject="Database">
+        <Button className="mt-2">Delete Database</Button>
+      </Can>
     </div>
   );
 };

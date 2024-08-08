@@ -49,6 +49,7 @@ export class MenuRegistry {
     if (menuPath.length === 1) {
       currentNode.label = item.label;
       currentNode.execute = item.execute;
+      currentNode.permission = item.permission;
       return;
     }
 

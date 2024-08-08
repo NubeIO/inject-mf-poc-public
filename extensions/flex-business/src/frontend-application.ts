@@ -20,10 +20,10 @@ const BEARS_SUBMENU_SUBSTRACT = [...BEARS, "2_bears_remove"];
 
 const permDefs = {
   BINOD: {
-    read: ["MarketingView", "Proposal"],
+    read: [],
   },
   RITESH: {
-    read: ["Contact", "Database"],
+    read: ["Bears", "Database"],
     delete: ["Database"],
   },
 };
@@ -62,6 +62,7 @@ export default class FlexBusinessApplication implements FrontEndApplication {
     });
     this.menuRegistry.registerMenuAction(BEARS, {
       label: "Bears",
+      permission: this.aclRegistry.permission("read", "Bears"),
     });
     this.menuRegistry.registerMenuAction(BEARS_SUBMENU_ADD, {
       label: "Increase Population",
