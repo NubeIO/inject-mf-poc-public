@@ -19,10 +19,10 @@ const BEARS_SUBMENU_ADD = [...BEARS, "1_bears_add"];
 const BEARS_SUBMENU_SUBSTRACT = [...BEARS, "2_bears_remove"];
 
 const permDefs = {
-  BINOD: {
+  USER: {
     read: [],
   },
-  RITESH: {
+  ADMIN: {
     read: ["Bears", "Database"],
     delete: ["Database"],
   },
@@ -51,13 +51,13 @@ export default class FlexBusinessApplication implements FrontEndApplication {
     this.menuRegistry.registerMenuAction(ACCOUNT_SUBMENU_RITESH, {
       label: "Ritesh (Admin)",
       execute: (...args) => {
-        this.aclRegistry.setRules(permDefs.RITESH);
+        this.aclRegistry.setRules(permDefs.ADMIN);
       },
     });
     this.menuRegistry.registerMenuAction(ACCOUNT_SUBMENU_BINOD, {
       label: "Binod (Basic)",
       execute: (...args) => {
-        this.aclRegistry.setRules(permDefs.BINOD);
+        this.aclRegistry.setRules(permDefs.USER);
       },
     });
     this.menuRegistry.registerMenuAction(BEARS, {
