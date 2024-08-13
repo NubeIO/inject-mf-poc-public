@@ -1,6 +1,7 @@
 import { memo, useEffect, useState } from "react"
 import { Icon } from "@nubeio/ui/universal-icon"
 import { TooltipWrapper } from "@nubeio/ui/tooltip-wrapper"
+import { UsersMenu } from "../layout/UsersMenu"
 import { SettingsMenu } from "../layout/SettingsMenu"
 import { useInjection } from "inversify-react"
 import {
@@ -16,6 +17,7 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from "@nubeio/ui/context-menu"
+import { Avatar, AvatarFallback, AvatarImage } from "@nubeio/ui/avatar"
 import { loadRemote } from "@module-federation/enhanced/runtime"
 
 import { Separator } from "@nubeio/ui/separator"
@@ -110,14 +112,25 @@ export const ExtensionMenu = memo((props: any) => {
         </TooltipWrapper>
       </div>
 
-      <div className="w-[50px] flex flex-col items-center">
-        <SettingsMenu>
-          <div className={`${menuItemBaseStyle}`}>
-            <TooltipWrapper content={"Settings"}>
+      <div className="w-[50px] flex flex-col items-center gap-y-[5px]">
+        {/* <Avatar className="w-[35px] h-[35px] border-2 border-slate-400">
+          <AvatarImage src="" alt="@shadcn" />
+          <AvatarFallback>G</AvatarFallback>
+        </Avatar> */}
+        <TooltipWrapper content={"User"}>
+          <UsersMenu>
+            <div className={`${menuItemBaseStyle}`}>
+              <Icon name="SquareUserRound" className={cardStyle} />
+            </div>
+          </UsersMenu>
+        </TooltipWrapper>
+        <TooltipWrapper content={"Settings"}>
+          <SettingsMenu>
+            <div className={`${menuItemBaseStyle}`}>
               <Icon name="Settings" className={cardStyle} />
-            </TooltipWrapper>
-          </div>
-        </SettingsMenu>
+            </div>
+          </SettingsMenu>
+        </TooltipWrapper>
       </div>
     </div>
   )

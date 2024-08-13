@@ -59,6 +59,7 @@ export class LayoutRegistry {
       // parsedLayouts contains the saved layouts, however, the content of each none empty layout needs to be repopulated
       // this is due to the fact that the content of a layout is a react component and it cannot be serialised and saved in local storage
       const parsedLayouts = JSON.parse(storedLayouts);
+      console.log("parsedLayouts is: ", { ...parsedLayouts });
 
       const manifestChangeCallback = async () => {
         const manifestUrls = this.extensionsLoader.getManifest.map(
@@ -66,6 +67,7 @@ export class LayoutRegistry {
         );
         for (const key in parsedLayouts) {
           const singleLayout = parsedLayouts[key];
+          console.log("singleLayout is: ", singleLayout);
           const newLayout: Layout = {
             ...singleLayout,
             layout: await this.traverseAndPopulate(
@@ -76,7 +78,8 @@ export class LayoutRegistry {
           parsedLayouts[key] = newLayout;
         }
         this.allLayouts = parsedLayouts;
-        this.notifyLayoutChangeListeners();
+        this.notifyLayoutChangeListeners(false);
+        console.log("allLayouts are: ", this.allLayouts);
       };
       this.extensionsLoader.onManifestChange(manifestChangeCallback);
     }
@@ -91,14 +94,14 @@ export class LayoutRegistry {
 
   set setAllLayouts(layouts: AllLayouts) {
     this.allLayouts = layouts;
-    this.notifyLayoutChangeListeners();
+    this.notifyLayoutChangeListeners(true);
   }
   set setSelectedLayout(layout: Layout | undefined) {
     if (!layout) return;
     this.selectedLayout = layout;
     this.notifySelectedLayoutChangeListeners();
     this.allLayouts[layout.id] = layout;
-    this.notifyLayoutChangeListeners();
+    this.notifyLayoutChangeListeners(true);
     this.storeManager.getStore.setState({
       currentSelectedPanel: undefined,
     });
@@ -125,7 +128,7 @@ export class LayoutRegistry {
   ) {
     if (singleLayout.children.length === 0) {
       if (
-        singleLayout.content &&
+        // singleLayout.content &&
         singleLayout.contentUrl &&
         manifestUrls.includes(singleLayout.contentUrl)
       ) {
@@ -156,18 +159,28 @@ export class LayoutRegistry {
   }
 
   // traverse the layout and remove the content of each layout
-  traverseAndRemove(layout: any) {
+  traverseAndRemove(layout: any): any {
     if (layout.children.length === 0) {
       return {
         ...layout,
         content: null,
       };
+      // copy = {
+      //   ...layout,
+      //   content: null,
+      // };
+      // return copy;
     } else {
       const children: LayoutConfig[] = layout.children.map(
         (child: LayoutConfig) => {
           return this.traverseAndRemove(child);
         },
       );
+      // copy = {
+      //   ...layout,
+      //   children: children,
+      // };
+      // return copy;
       return {
         ...layout,
         children: children,
@@ -212,13 +225,13 @@ export class LayoutRegistry {
     };
 
     this.add(newLayout);
-    this.notifyLayoutChangeListeners();
+    this.notifyLayoutChangeListeners(true);
   }
 
   removeLayout(id: string): void {
     if (!this.allLayouts[id]) return;
     this.remove(id);
-    this.notifyLayoutChangeListeners();
+    this.notifyLayoutChangeListeners(true);
     if (this.selectedLayout && this.selectedLayout.id === id) {
       this.selectedLayout = undefined;
       this.notifySelectedLayoutChangeListeners();
@@ -226,15 +239,20 @@ export class LayoutRegistry {
   }
 
   persistLayouts(): void {
-    const copyLayouts = { ...this.allLayouts };
-    Object.keys(copyLayouts).forEach((key) => {
-      const layout = copyLayouts[key];
-      if (layout.layout.children.length === 0) {
-        layout.layout.content = null;
-      } else {
-        layout.layout = this.traverseAndRemove(layout.layout);
-      }
-    });
+    const copyLayouts: any = deepCopy(this.allLayouts);
+    // const copyLayouts = { ...this.allLayouts };
+    // Object.keys(copyLayouts).forEach((key) => {
+    //   const layout = copyLayouts[key];
+    //   if (layout.layout.children.length === 0) {
+    //     layout.layout.content = null;
+    //     // copyLayouts[key] = { ...layout.layout, content: null };
+    //   } else {
+    //     layout.layout = this.traverseAndRemove(layout.layout);
+    //     // copyLayouts[key] = this.traverseAndRemove(layout.layout, {});
+    //   }
+    // });
+    console.log("copyLayouts is: ", copyLayouts);
+    console.log("this.allLayouts is: ", this.allLayouts);
     localStorage.setItem(LAYOUT_LOCAL_STORAGE_KEY, JSON.stringify(copyLayouts));
   }
 
@@ -254,9 +272,9 @@ export class LayoutRegistry {
   removeOnLayoutChange(listener: ChangeListener): void {
     this.layoutChangeListeners.delete(listener);
   }
-  private notifyLayoutChangeListeners(): void {
+  private notifyLayoutChangeListeners(isPersist: boolean): void {
     // persist layouts
-    this.persistLayouts();
+    isPersist && this.persistLayouts();
     // notify all listeners
     for (const listener of this.layoutChangeListeners) {
       listener();
@@ -301,7 +319,7 @@ export class LayoutRegistry {
       currentSelectedPanel: newLayoutConfig,
     });
 
-    this.notifyLayoutChangeListeners();
+    this.notifyLayoutChangeListeners(true);
     this.notifySelectedLayoutChangeListeners();
   };
 
@@ -343,7 +361,7 @@ export class LayoutRegistry {
 
     this.selectedLayout.layout = copy;
 
-    this.notifyLayoutChangeListeners();
+    this.notifyLayoutChangeListeners(true);
     this.notifySelectedLayoutChangeListeners();
   };
 
@@ -475,7 +493,7 @@ export class LayoutRegistry {
     }
 
     this.selectedLayout.layout = copy;
-    this.notifyLayoutChangeListeners();
+    this.notifyLayoutChangeListeners(true);
     this.notifySelectedLayoutChangeListeners();
   };
 
@@ -499,3 +517,33 @@ export class LayoutRegistry {
     return null;
   };
 }
+
+const deepCopy = (obj: any): any => {
+  // Check if the value is a primitive type or null/undefined
+  if (obj === null || typeof obj !== "object") {
+    return obj;
+  }
+
+  // Handle arrays
+  if (Array.isArray(obj)) {
+    const arrCopy = [];
+    for (let i = 0; i < obj.length; i++) {
+      arrCopy[i] = deepCopy(obj[i]);
+    }
+    return arrCopy;
+  }
+
+  // Handle objects
+  const objCopy: any = {};
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      // If the key is 'content', set it to null
+      if (key === "content") {
+        objCopy[key] = null;
+      } else {
+        objCopy[key] = deepCopy(obj[key]);
+      }
+    }
+  }
+  return objCopy;
+};

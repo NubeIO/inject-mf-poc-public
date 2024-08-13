@@ -27,7 +27,7 @@ import {
 } from "@nubeio/flex-core"
 import { AclService } from "@nubeio/flex-core/acl/acl-service"
 
-export const SettingsMenu = React.forwardRef((props: any, ref: any) => {
+export const UsersMenu = React.forwardRef((props: any, ref: any) => {
   const { children } = props
   const [currentRole, setCurrentRole] = useState("guest")
 
@@ -52,62 +52,7 @@ export const SettingsMenu = React.forwardRef((props: any, ref: any) => {
       <DropdownMenuContent className={`w-56`} side="right">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuSub>
-            <DropdownMenuSubTrigger>{t("theme")}</DropdownMenuSubTrigger>
-            <DropdownMenuPortal>
-              <DropdownMenuSubContent>
-                <DropdownMenuItem onClick={() => {}}>
-                  {t("light")}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => {}}>
-                  {t("dark")}
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => {}}>
-                  {t("system")}
-                </DropdownMenuItem>
-              </DropdownMenuSubContent>
-            </DropdownMenuPortal>
-          </DropdownMenuSub>
-          <DropdownMenuSub>
-            <DropdownMenuSubTrigger>{t("language")}</DropdownMenuSubTrigger>
-            <DropdownMenuPortal>
-              <DropdownMenuSubContent>
-                {options.map((option: any) => {
-                  return (
-                    <DropdownMenuItem
-                      key={option.value}
-                      onClick={() => i18n.changeLanguage(option.value)}
-                    >
-                      {option.label}
-                    </DropdownMenuItem>
-                  )
-                })}
-              </DropdownMenuSubContent>
-            </DropdownMenuPortal>
-          </DropdownMenuSub>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem>Team</DropdownMenuItem>
-          <DropdownMenuSub>
-            <DropdownMenuSubTrigger>Invite users</DropdownMenuSubTrigger>
-            <DropdownMenuPortal>
-              <DropdownMenuSubContent>
-                <DropdownMenuItem>Email</DropdownMenuItem>
-                <DropdownMenuItem>Message</DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>More...</DropdownMenuItem>
-              </DropdownMenuSubContent>
-            </DropdownMenuPortal>
-          </DropdownMenuSub>
-          <DropdownMenuItem>
-            New Team
-            <DropdownMenuShortcut>⌘+T</DropdownMenuShortcut>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        {/* <DropdownMenuSeparator />
+
         <DropdownMenuRadioGroup
           value={currentRole}
           onValueChange={(newRole: string) => {
@@ -126,7 +71,7 @@ export const SettingsMenu = React.forwardRef((props: any, ref: any) => {
         <DropdownMenuItem onClick={handleLogoutClick}>
           Log out
           <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
-        </DropdownMenuItem> */}
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )
