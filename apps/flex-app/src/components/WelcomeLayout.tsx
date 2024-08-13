@@ -2,6 +2,8 @@ import PBUi from "flex_ui/button";
 import PBBusiness from "flex_business/button";
 import { Button } from "@nubeio/ui/button";
 import { Can, useTranslation } from "@nubeio/flex-core";
+import { ThemeColorToggle } from "./theme-color-toggle";
+import { ThemeModeToggle } from "./theme-mode-toggle";
 type WelcomeComponentProps = {};
 
 export const WelcomeLayout: React.FC<WelcomeComponentProps> = () => {
@@ -9,6 +11,10 @@ export const WelcomeLayout: React.FC<WelcomeComponentProps> = () => {
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
+      <div className="flex gap-2">
+        <ThemeModeToggle />
+        <ThemeColorToggle />
+      </div>
       <h2 className="mb-4 font-bold text-2xl	">
         {localize("welcome", { fallback: "Hi" })}
       </h2>
