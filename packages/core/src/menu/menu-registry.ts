@@ -20,9 +20,7 @@ export class MenuRegistry {
     }
   }
 
-  registerThemeColor(name: String, colors: {}) {
-
-  }
+  registerThemeColor(name: String, colors: {}) {}
 
   private sortChildren(node: MenuNode): void {
     if (node.children) {

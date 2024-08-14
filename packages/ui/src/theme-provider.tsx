@@ -22,7 +22,7 @@ type ThemeProviderState = {
 const initialState: ThemeProviderState = {
   theme: "system",
   setTheme: () => null,
-  themeColor: "Zinc",
+  themeColor: "Nube",
   setThemeColor: () => null,
 };
 
@@ -31,7 +31,7 @@ const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
 export function ThemeProvider({
   children,
   defaultTheme = "system",
-  defaultColor = "Zinc",
+  defaultColor = "Nube",
   themeStorageKey = "key-ui-theme",
   colorStorageKey = "key-ui-brand",
   ...props
@@ -78,15 +78,15 @@ export function ThemeProvider({
     localStorage.setItem("themeColor", themeColor);
 
     if (theme === "system") {
-        const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
-          .matches
-          ? "dark"
-          : "light";
-  
-          setGlobalColorTheme(systemTheme, themeColor);
-      } else {
-        setGlobalColorTheme(theme, themeColor);
-      }
+      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
+        .matches
+        ? "dark"
+        : "light";
+
+      setGlobalColorTheme(systemTheme, themeColor);
+    } else {
+      setGlobalColorTheme(theme, themeColor);
+    }
 
     if (!isMounted) {
       setIsMounted(true);
