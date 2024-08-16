@@ -1,3 +1,5 @@
+import { TYPES, useInjection } from "@nubeio/flex-core";
+import { ThemeRegistry } from "@nubeio/flex-core/themes/theme-registry";
 import { Button } from "@nubeio/ui/button";
 import {
   DropdownMenu,
@@ -5,10 +7,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@nubeio/ui/dropdown-menu";
-import { useTheme } from "@nubeio/ui/theme-provider";
 
 export function ThemeModeToggle() {
-  const { setTheme } = useTheme();
+  const themeRegistry = useInjection<ThemeRegistry>(TYPES.ThemeRegistry);
 
   return (
     <DropdownMenu>
@@ -24,13 +25,13 @@ export function ThemeModeToggle() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme("light")}>
+        <DropdownMenuItem onClick={() => themeRegistry.setMode("light")}>
           Light
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")}>
+        <DropdownMenuItem onClick={() => themeRegistry.setMode("dark")}>
           Dark
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")}>
+        <DropdownMenuItem onClick={() => themeRegistry.setMode("system")}>
           System
         </DropdownMenuItem>
       </DropdownMenuContent>

@@ -1,6 +1,7 @@
 "use client";
+import { useInjection, TYPES } from "@nubeio/flex-core";
+import { ThemeRegistry } from "@nubeio/flex-core/themes/theme-registry";
 import { cn } from "@nubeio/ui";
-import { ThemeColors } from "@nubeio/ui/colors-theme";
 import {
   Select,
   SelectContent,
@@ -8,38 +9,35 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@nubeio/ui/select";
-import { useTheme } from "@nubeio/ui/theme-provider";
-
-const availableThemeColors = [
-  { name: "Nube", light: "bg-[#1FA38B]", dark: "bg-[#1FA38B]" },
-  { name: "Daikin", light: "bg-[#44C7F4]", dark: "bg-[#44C7F4]" },
-];
 
 export function ThemeColorToggle() {
-  const { theme, themeColor, setThemeColor } = useTheme();
+  const themeRegistry = useInjection<ThemeRegistry>(TYPES.ThemeRegistry);
 
+  const availableThemes = themeRegistry.availableThemes;
+
+  if (Object.keys(availableThemes).length <= 1) return <div></div>;
   const createSelectItems = () => {
-    return availableThemeColors.map(({ name, light, dark }) => (
-      <SelectItem key={name} value={name}>
-        <div className="flex item-center space-x-3">
-          <div
-            className={cn(
-              "rounded-full",
-              "w-[20px]",
-              "h-[20px]",
-              theme === "light" ? light : dark,
-            )}
-          ></div>
-          <div className="text-sm">{name}</div>
-        </div>
-      </SelectItem>
-    ));
+    return Object.keys(availableThemes).map(function (name) {
+      const colors = availableThemes[name];
+      const primary = `bg-[rgb(${themeRegistry.theme === "light" ? colors.light?.primary : colors.dark?.primary})]/[.05]`;
+
+      return (
+        <SelectItem key={name} value={name}>
+          <div className="flex item-center space-x-3">
+            <div
+              className={cn("rounded-full", "w-[20px]", "h-[20px]", primary)}
+            ></div>
+            <div className="text-sm">{name}</div>
+          </div>
+        </SelectItem>
+      );
+    });
   };
 
   return (
     <Select
-      onValueChange={(value) => setThemeColor(value as ThemeColors)}
-      defaultValue={themeColor}
+      onValueChange={(value) => themeRegistry.setTheme(value)}
+      defaultValue={themeRegistry.theme}
     >
       <SelectTrigger className="w-[180px] ring-offset-transparent focus:ring-transparent">
         <SelectValue placeholder="Select Color" />

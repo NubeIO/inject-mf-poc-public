@@ -18,4 +18,5 @@ export const TYPES = {
   LocalizationService: Symbol.for("LocalizationService"),
   LanguageNSRegistry: Symbol.for("LanguageNSRegistry"),
   ACLRegistry: Symbol.for("ACLRegistry"),
+  ThemeRegistry: Symbol.for("ThemeRegistry"),
 };

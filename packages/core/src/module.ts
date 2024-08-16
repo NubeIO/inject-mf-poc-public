@@ -13,6 +13,7 @@ import {
 } from "./i18n";
 import { LanguageNSRegistry } from "./i18n/language-namespace-service";
 import { MenuRegistry } from "./menu";
+import { ThemeRegistry } from "./themes/theme-registry";
 import { OpenHandler, OpenService, WidgetManager } from "./widget";
 
 const coreContainer = new ContainerModule((bind) => {
@@ -22,6 +23,7 @@ const coreContainer = new ContainerModule((bind) => {
   bind(TYPES.LanguageRegistry).to(LanguageRegistry).inSingletonScope();
   bind(TYPES.LocalizationService).to(LocalizationService).inSingletonScope();
   bind(TYPES.ACLRegistry).to(ACLRegistry).inSingletonScope();
+  bind(TYPES.ThemeRegistry).to(ThemeRegistry).inSingletonScope();
 
   bind<FrontEndApplication>(TYPES.FrontEndApplication).to(
     CoreFrontendApplication,

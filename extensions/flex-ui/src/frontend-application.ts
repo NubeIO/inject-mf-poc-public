@@ -8,10 +8,12 @@ import {
   URI,
   LanguageNSRegistry,
   named,
+  ThemeRegistry,
 } from "@nubeio/flex-core";
 
 import enTranslations from "../assets/locales/en.json";
 import zhTranslations from "../assets/locales/zh.json";
+import daikinTheme from "../assets/themes/daikin.json";
 
 import * as flexCore from "@nubeio/flex-core";
 
@@ -33,10 +35,14 @@ export default class FlexUIApplication implements FrontEndApplication {
     @inject(TYPES.LanguageNSRegistry)
     @named(LANGUAGE_NAMESPACE)
     protected readonly nls: LanguageNSRegistry,
+    @inject(TYPES.ThemeRegistry)
+    protected readonly themeRegistry: ThemeRegistry,
   ) {}
   initialize(): void {
     this.nls.registerLanguage("en", enTranslations);
     this.nls.registerLanguage("zh", zhTranslations);
+    this.themeRegistry.registerTheme("Daikin", daikinTheme);
+    // this.themeRegistry.overrideTheme("Daikin", daikinTheme);
 
     this.menuRegistry.registerMenuAction(EDIT, {
       label: this.nls.localize("menu.edit", "Edit"),

@@ -9,7 +9,6 @@ import coreContainer from "@nubeio/flex-core/module";
 import { Container, initializeApplication, Provider } from "@nubeio/flex-core";
 
 import { ChildComponent } from "./components/Layout";
-import { ThemeProvider } from "@nubeio/ui/theme-provider";
 
 const App = () => {
   const [container, setContainer] = useState<Container | null>(null);
@@ -34,9 +33,7 @@ const App = () => {
 
   return (
     <Provider container={container}>
-      <ThemeProvider>
-        <ChildComponent />
-      </ThemeProvider>
+      <ChildComponent />
     </Provider>
   );
 };
