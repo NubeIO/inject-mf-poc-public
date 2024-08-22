@@ -12,13 +12,7 @@ export default defineConfig({
       appendPlugins([
         new ModuleFederationPlugin({
           name: "flex",
-          remotes: {
-            flex_ui: "flex_ui@http://localhost:3000/mf-manifest.json",
-            flex_business:
-              "flex_business@http://localhost:3001/mf-manifest.json",
-            flex_japanese:
-              "flex_japanese@http://localhost:3002/mf-manifest.json",
-          },
+          remotes: {},
           shared: {
             react: { singleton: true },
             "react-dom": { singleton: true },

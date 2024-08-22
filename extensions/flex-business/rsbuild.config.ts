@@ -19,9 +19,7 @@ export default defineConfig({
         new ModuleFederationPlugin({
           name: "flex_business",
           exposes: {
-            "./button": "./src/button.tsx",
-            "./module": "./src/module.ts",
-            "./frontend-application": "./src/frontend-application.ts",
+            ".": "./src/module.ts",
           },
           shared: {
             react: { singleton: true },

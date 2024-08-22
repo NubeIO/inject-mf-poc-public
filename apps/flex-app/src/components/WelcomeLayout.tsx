@@ -1,5 +1,3 @@
-import PBUi from "flex_ui/button";
-import PBBusiness from "flex_business/button";
 import { Button } from "@nubeio/ui/button";
 import { Can, useTranslation } from "@nubeio/flex-core";
 import { ThemeColorToggle } from "./theme-color-toggle";
@@ -36,10 +34,6 @@ export const WelcomeLayout: React.FC<WelcomeComponentProps> = () => {
         {localize("welcome", { fallback: "Hi" })}
       </h2>
       <p className="mb-4">Start building amazing things with Rsbuild.</p>
-      <div className="flex gap-2">
-        <PBUi />
-        <PBBusiness />
-      </div>
       <ButtonGroup />
       <CardExample />
       <Can action="delete" subject="Database">

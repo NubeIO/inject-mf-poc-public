@@ -19,7 +19,7 @@ export default defineConfig({
         new ModuleFederationPlugin({
           name: "flex_japanese",
           exposes: {
-            "./module": "./src/module.ts",
+            ".": "./src/module.ts",
           },
           shared: {
             react: { singleton: true },
